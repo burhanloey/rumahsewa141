@@ -1,0 +1,14 @@
+(ns rumahsewa141.env
+  (:require [selmer.parser :as parser]
+            [clojure.tools.logging :as log]
+            [rumahsewa141.dev-middleware :refer [wrap-dev]]))
+
+(def defaults
+  {:init
+   (fn []
+     (parser/cache-off!)
+     (log/info "\n-=[rumahsewa141 started successfully using the development profile]=-"))
+   :stop
+   (fn []
+     (log/info "\n-=[rumahsewa141 has shut down successfully]=-"))
+   :middleware wrap-dev})
