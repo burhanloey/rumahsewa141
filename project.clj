@@ -4,6 +4,8 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[bouncer "1.0.0"]
+                 [buddy "1.2.0"]
+                 [cider/cider-nrepl "0.14.0"]
                  [compojure "1.5.1"]
                  [conman "0.6.2"]
                  [cprop "0.1.9"]

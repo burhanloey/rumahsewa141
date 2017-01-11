@@ -4,6 +4,7 @@
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
             [rumahsewa141.config :refer [env]]
+            [cider.nrepl :refer [cider-nrepl-handler]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [mount.core :as mount])
@@ -27,7 +28,7 @@
                 repl-server
                 :start
                 (when-let [nrepl-port (env :nrepl-port)]
-                  (repl/start {:port nrepl-port}))
+                  (repl/start {:port nrepl-port :handler cider-nrepl-handler}))
                 :stop
                 (when repl-server
                   (repl/stop repl-server)))
