@@ -2,7 +2,9 @@
   (:require [compojure.core :refer [routes wrap-routes]]
             [rumahsewa141.layout :refer [error-page]]
             [rumahsewa141.routes.home :refer [home-routes]]
-            [rumahsewa141.routes.restricted :refer [restricted-routes]]
+            [rumahsewa141.routes.register :refer [register-routes]]
+            [rumahsewa141.routes.auth :refer [auth-routes]]
+            [rumahsewa141.routes.member :refer [member-routes]]
             [compojure.route :as route]
             [rumahsewa141.env :refer [defaults]]
             [mount.core :as mount]
@@ -17,7 +19,13 @@
     (-> #'home-routes
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
-    (-> #'restricted-routes
+    (-> #'register-routes
+        (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-formats))
+    (-> #'auth-routes
+        (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-formats))
+    (-> #'member-routes
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats)
         (wrap-routes middleware/wrap-restricted))
