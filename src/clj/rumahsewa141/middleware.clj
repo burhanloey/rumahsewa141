@@ -12,7 +12,8 @@
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
-            [buddy.auth.backends.session :refer [session-backend]])
+            [buddy.auth.backends.session :refer [session-backend]]
+            [ring.util.response :refer [redirect]])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -64,7 +65,8 @@
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
-                     :on-error on-error}))
+                     :on-error (fn [req res]
+                                 (redirect "/login"))}))
 
 (defn wrap-auth [handler]
   (let [backend (session-backend)]

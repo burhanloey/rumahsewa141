@@ -9,8 +9,10 @@
             [bouncer.validators :as v]
             [rumahsewa141.db.core :refer [get-user]]))
 
-(defn login-page []
-  (layout/render "login.html"))
+(defn login-page [{identity :identity}]
+  (if (nil? identity)
+    (layout/render "login.html")
+    (redirect "/member")))
 
 (defn lookup-user [username password]
   (if-let [user (get-user {:username username})]
@@ -38,6 +40,6 @@
       (assoc :session (dissoc session :identity))))
 
 (defroutes auth-routes
-  (GET "/login" [] (login-page))
+  (GET "/login" req (login-page req))
   (POST "/login" req (do-login! req))
   (POST "/logout" req (do-logout! req)))

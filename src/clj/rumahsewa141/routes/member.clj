@@ -2,10 +2,10 @@
   (:require [rumahsewa141.layout :as layout]
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
-            [clojure.java.io :as io]))
+            [ring.util.response :refer [redirect]]))
 
-(defn member-page []
-  (layout/render "member.html"))
+(defn member-page [{{username :username :as identity} :identity}]
+  (layout/render "member.html" {:name username}))
 
 (defroutes member-routes
-  (GET "/member" [] (member-page)))
+  (GET "/member" req (member-page req)))

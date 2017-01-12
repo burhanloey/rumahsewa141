@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+<p>
+  Selamat datang, {{ name }}!
+</p>
+
 <form action="/logout" method="POST">
   {% csrf-field %}
   <input type="submit" name="logout" value="Log Out" />
