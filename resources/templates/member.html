@@ -3,6 +3,14 @@
 <p>
   Selamat datang, {{ name }}!
 </p>
+<p>
+  Duit yang perlu dibayar:
+</p>
+<p>
+  Sewa rumah: RM {{ rental_fee }}<br />
+  Internet: RM {{ internet_bill }}<br />
+  Lain-lain: RM {{ other_bills }}
+</p>
 
 <form action="/logout" method="POST">
   {% csrf-field %}

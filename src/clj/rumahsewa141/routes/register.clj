@@ -11,6 +11,9 @@
             [rumahsewa141.validators :refer [available-username
                                              optional-email]]))
 
+(def default-value {:nickname ""
+                    :phone_no ""})
+
 (defn register-page []
   (layout/render "register.html"))
 
@@ -20,11 +23,11 @@
                 :password v/required
                 :email optional-email)
 
-    ;; If registration is valid,
+    ;; If params is valid then register,
     (when-let [_ (create-user!
-                  {:username username
-                   :password (hashers/encrypt password)
-                   :email email})]
+                  (merge default-value
+                         {:username username
+                          :password (hashers/encrypt password)}))]
       "You have been registered.")
 
     ;; else, display errors.

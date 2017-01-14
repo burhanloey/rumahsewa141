@@ -16,7 +16,7 @@
 
 (defn lookup-user [username password]
   (if-let [user (get-user {:username username})]
-    (if (hashers/check password (:password user))
+    (if (hashers/check password (get user :password))
       (dissoc user :password))))
 
 (defn do-login! [{{:keys [username password session] :as params} :params}]
