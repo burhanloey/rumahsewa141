@@ -1,41 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% if admin %}
-<p>Hi, admin {{ username }}!</p>
-<p>
-  <table class="table">
-    <tr>
-      <th>username</th>
-      <th>nickname</th>
-      <th>phone no</th>
-      <th>rent</th>
-      <th>internet</th>
-      <th>other</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-      <td>{{ user.username }}</td>
-      <td>{{ user.nickname }}</td>
-      <td>{{ user.phone_no }}</td>
-      <td>{{ user.rent_bill_left }}</td>
-      <td>{{ user.internet_bill_left }}</td>
-      <td>{{ user.other_bills_left }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</p>
+{% include "admin_view.html" %}
 {% else %}
-<p>
-  Selamat datang, {{ username }}!
-</p>
-<p>
-  Duit yang perlu dibayar:
-</p>
-<p>
-  Sewa rumah: RM {{ rent_bill_left }}<br />
-  Internet: RM {{ internet_bill_left }}<br />
-  Lain-lain: RM {{ other_bills_left }}
-</p>
+{% include "normal_view.html" %}
 {% endif %}
 <p>
 <form action="/logout" method="POST">

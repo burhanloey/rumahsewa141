@@ -8,8 +8,7 @@
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [rumahsewa141.validators :refer [available-username
-                                             optional-email]]))
+            [rumahsewa141.validators :refer [available-username]]))
 
 (def default-value {:nickname ""
                     :phone_no ""})
@@ -17,24 +16,24 @@
 (defn register-page []
   (layout/render "register.html"))
 
-(defn do-register! [{{:keys [username password email] :as params} :params}]
+(defn do-register! [{{:keys [username password nickname phone_no] :as params} :params}]
   (if (b/valid? params
                 :username [v/required available-username]
-                :password v/required
-                :email optional-email)
+                :password v/required)
 
     ;; If params is valid then register,
     (when-let [_ (create-user!
                   (merge default-value
                          {:username username
-                          :password (hashers/encrypt password)}))]
+                          :password (hashers/encrypt password)
+                          :nickname nickname
+                          :phone_no phone_no}))]
       "You have been registered.")
 
     ;; else, display errors.
     (str (first (b/validate params
                             :username [v/required available-username]
-                            :password v/required
-                            :email optional-email)))))
+                            :password v/required)))))
 
 (defroutes register-routes
   (GET "/register" [] (register-page))

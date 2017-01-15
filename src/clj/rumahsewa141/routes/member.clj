@@ -18,16 +18,24 @@
          :other_bills_left   (- other_bills
                                 other_payments)))
 
-(defn admin-view []
+(defn get-all-users-bills-left []
   (let [users (get-users)]
     {:users (map assoc-total-bills-left users)}))
 
-(defn member-page [{{id :id username :username admin :admin} :identity}]
+(defn admin-view [username]
+  (layout/render "member.html" (merge {:username username
+                                       :admin true}
+                                      (get-all-users-bills-left))))
+
+(defn normal-view [id username]
   (let [user-bills (get-user-bills {:id id})]
-    (layout/render "member.html" (merge (assoc-total-bills-left user-bills)
-                                        {:username username}
-                                        (when (true? admin)
-                                          (assoc (admin-view) :admin admin))))))
+    (layout/render "member.html" (merge {:username username}
+                                        (assoc-total-bills-left user-bills)))))
+
+(defn member-page [{{id :id username :username admin :admin} :identity}]
+  (if (true? admin)
+    (admin-view username)
+    (normal-view id username)))
 
 (defroutes member-routes
   (GET "/member" req (member-page req)))
