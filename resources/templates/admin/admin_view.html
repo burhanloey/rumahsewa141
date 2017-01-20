@@ -1,0 +1,21 @@
+<p>Hi, admin {{ username }}!</p>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link{% if overview %} active{% endif %}" href="/admin">Overview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if billing %} active{% endif %}" href="/admin/billing">Billing</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if manage %} active{% endif %}" href="/admin/manage">Manage</a>
+  </li>
+</ul>
+{% if overview %}
+{% include "admin/admin_overview.html" %}
+{% endif %}
+{% if billing %}
+{% include "admin/admin_billing.html" %}
+{% endif %}
+{% if manage %}
+{% include "admin/admin_manage.html" %}
+{% endif %}

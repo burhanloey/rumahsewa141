@@ -4,38 +4,19 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [rumahsewa141.db.core :refer [get-users
-                                          get-user-bills]]))
+                                          get-user-bills]]
+            [rumahsewa141.utils :refer [assoc-total-bills-left]]))
 
-(defn assoc-total-bills-left [{:keys [rent_bill rent_payment
-                                      internet_bill internet_payment
-                                      other_bills other_payments]
-                               :as user}]
-  (assoc user
-         :rent_bill_left     (- rent_bill
-                                rent_payment)
-         :internet_bill_left (- internet_bill
-                                internet_payment)
-         :other_bills_left   (- other_bills
-                                other_payments)))
-
-(defn get-all-users-bills-left []
-  (let [users (get-users)]
-    {:users (map assoc-total-bills-left users)}))
-
-(defn admin-view [username]
-  (layout/render "member.html" (merge {:username username
-                                       :admin true}
-                                      (get-all-users-bills-left))))
-
-(defn normal-view [id username]
+(defn normal-view [section {{id :id username :username} :identity}]
   (let [user-bills (get-user-bills {:id id})]
     (layout/render "member.html" (merge {:username username}
                                         (assoc-total-bills-left user-bills)))))
 
-(defn member-page [{{id :id username :username admin :admin} :identity}]
+(defn member-page [{{admin :admin} :identity :as req}]
   (if (true? admin)
-    (admin-view username)
-    (normal-view id username)))
+    (redirect "/admin")
+    (normal-view :overview req)))
 
 (defroutes member-routes
-  (GET "/member" req (member-page req)))
+  (GET "/member" req (member-page req))
+  (GET "/member/settings" req (member-page req)))

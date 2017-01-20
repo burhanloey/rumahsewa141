@@ -63,6 +63,14 @@
     {:status 403
      :title (str "Access to " (:uri request) " is not authorized")}))
 
+(defn should-be-admin [{{admin :admin} :identity}]
+  (true? admin))
+
+(defn wrap-admin-only [handler]
+  (restrict handler {:handler should-be-admin
+                     :on-error (fn [req res]
+                                 (redirect "/member"))}))
+
 (defn wrap-restricted [handler]
   (restrict handler {:handler authenticated?
                      :on-error (fn [req res]

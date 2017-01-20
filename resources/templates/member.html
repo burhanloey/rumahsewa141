@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% if admin %}
-{% include "admin_view.html" %}
+{% include "admin/admin_view.html" %}
 {% else %}
-{% include "normal_view.html" %}
+{% include "normal/normal_view.html" %}
 {% endif %}
 <p>
 <form action="/logout" method="POST">

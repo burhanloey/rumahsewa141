@@ -25,8 +25,8 @@
                  :password v/required})
 
     ;; If parameters are valid, lookup for the user in database,
-    (if-let [user (lookup-user username password)]
-      (-> (redirect "/member")
+    (if-let [{admin :admin :as user} (lookup-user username password)]
+      (-> (redirect (if (true? admin) "/admin" "/member"))
           (assoc :session (assoc session :identity user)))
       "Wrong username or password.")
 
