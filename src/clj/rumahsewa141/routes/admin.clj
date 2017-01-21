@@ -5,9 +5,7 @@
             [ring.util.response :refer [redirect]]
             [rumahsewa141.db.core :refer [get-all-users
                                           get-all-users-info
-                                          create-transaction!]]
-            [rumahsewa141.utils :refer [assoc-total-bills-left
-                                        assoc-fee-display]]))
+                                          create-transaction!]]))
 
 (defn parse-double [num]
   (if (clojure.string/blank? num)
@@ -27,34 +25,22 @@
                      (flatten (vector users))))]
       (redirect "/admin"))))
 
-(defn manage-page [{{username :username} :identity}]
-  (layout/render "member.html" {:username username
-                                :admin true
-                                :manage true}))
+(defn all-users []
+  {:users (get-all-users)})
 
-(defn payment-page [{{username :username} :identity}]
-  (layout/render "member.html" {:username username
-                                :admin true
-                                :payment true
-                                :users (get-all-users)}))
+(defn all-users-info []
+  {:users (get-all-users-info)})
 
-(defn billing-page [{{username :username} :identity}]
+(defn admin-page [section get-content-fn {{username :username} :identity}]
   (layout/render "member.html" {:username username
                                 :admin true
-                                :billing true
-                                :users (get-all-users)}))
-
-(defn admin-page [{{username :username} :identity}]
-  (layout/render "member.html" {:username username
-                                :admin true
-                                :overview true
-                                :users (get-all-users-info)}))
+                                :section section
+                                :content (get-content-fn)}))
 
 (defroutes admin-routes
-  (GET "/admin" req (admin-page req))
-  (GET "/admin/billing" req (billing-page req))
+  (GET "/admin" req (admin-page "overview" all-users-info req))
+  (GET "/admin/billing" req (admin-page "billing" all-users req))
+  (GET "/admin/payment" req (admin-page "payment" all-users req))
+  (GET "/admin/manage" req (admin-page "manage" all-users req))
   (POST "/admin/billing" req (do-transaction + req))
-  (GET "/admin/payment" req (payment-page req))
-  (POST "/admin/payment" req (do-transaction - req))
-  (GET "/admin/manage" req (manage-page req))
-  (GET "/admin/settings" [] ""))
+  (POST "/admin/payment" req (do-transaction - req)))

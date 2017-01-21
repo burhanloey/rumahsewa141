@@ -1,27 +1,27 @@
 <p>Hi, admin {{ username }}!</p>
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link{% if overview %} active{% endif %}" href="/admin">Overview</a>
+    <a class="nav-link{% ifequal section "overview" %} active{% endifequal %}" href="/admin">Overview</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if billing %} active{% endif %}" href="/admin/billing">Billing</a>
+    <a class="nav-link{% ifequal section "billing" %} active{% endifequal %}" href="/admin/billing">Billing</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if payment %} active{% endif %}" href="/admin/payment">Payment</a>
+    <a class="nav-link{% ifequal section "payment" %} active{% endifequal %}" href="/admin/payment">Payment</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link{% if manage %} active{% endif %}" href="/admin/manage">Manage</a>
+    <a class="nav-link{% ifequal section "manage" %} active{% endifequal %}" href="/admin/manage">Manage</a>
   </li>
 </ul>
-{% if overview %}
+{% ifequal section "overview" %}
 {% include "admin/admin_overview.html" %}
-{% endif %}
-{% if billing %}
+{% endifequal %}
+{% ifequal section "billing" %}
 {% include "admin/admin_billing.html" %}
-{% endif %}
-{% if payment %}
+{% endifequal %}
+{% ifequal section "payment" %}
 {% include "admin/admin_payment.html" %}
-{% endif %}
-{% if manage %}
+{% endifequal %}
+{% ifequal section "manage" %}
 {% include "admin/admin_manage.html" %}
-{% endif %}
+{% endifequal %}
