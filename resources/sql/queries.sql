@@ -16,7 +16,11 @@ SELECT * FROM users
 WHERE username = :username
 
 -- :name get-users :? :*
--- :doc retrieve all users
+-- :doc retrieve all users.
+SELECT id, username, nickname FROM users ORDER BY id
+
+-- :name get-all-users-info :? :*
+-- :doc retrieve all users information.
 SELECT
  id, username, nickname, phone_no,
  COALESCE(SUM(rent_fee), 0.00) AS rent_bill,
@@ -51,6 +55,10 @@ VALUES (:rent_fee, :internet_fee, :other_fees, :description)
 SELECT year, month, rent_fee, internet_fee, other_fees
 FROM bills INNER JOIN fees ON (bills.fees_id = fees.id)
 WHERE year = :year AND month = :month
+
+-- :name get-fees :? :*
+-- :doc retrieve all fees
+SELECT * FROM fees ORDER BY id;
 
 -- :name delete-fee! :! :n
 -- :doc delete a fees record given the id

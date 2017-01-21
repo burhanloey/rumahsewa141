@@ -11,3 +11,9 @@
                                 internet_payment)
          :other_bills_left   (- other_bills
                                 other_payments)))
+
+(defn assoc-fee-display [{:keys [rent_fee internet_fee
+                                 other_fees description] :as fee}]
+  (assoc fee
+         :display (str description " (rent: " rent_fee ", internet: "
+                       internet_fee ", others: " other_fees ")")))

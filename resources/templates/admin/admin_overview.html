@@ -1,22 +1,20 @@
-<p>
-  <table class="table">
-    <tr>
-      <th>username</th>
-      <th>nickname</th>
-      <th>phone no</th>
-      <th>rent</th>
-      <th>internet</th>
-      <th>other</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-      <td>{{ user.username }}</td>
-      <td>{{ user.nickname }}</td>
-      <td>{{ user.phone_no }}</td>
-      <td>{{ user.rent_bill_left }}</td>
-      <td>{{ user.internet_bill_left }}</td>
-      <td>{{ user.other_bills_left }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</p>
+<table class="table">
+  <tr>
+    <th>username</th>
+    <th>nickname</th>
+    <th>phone no</th>
+    <th>rent</th>
+    <th>internet</th>
+    <th>other</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td>{{ user.username }}</td>
+    <td>{{ user.nickname }}</td>
+    <td>{{ user.phone_no }}</td>
+    <td>{{ user.rent_bill_left }}</td>
+    <td>{{ user.internet_bill_left }}</td>
+    <td>{{ user.other_bills_left }}</td>
+  </tr>
+  {% endfor %}
+</table>

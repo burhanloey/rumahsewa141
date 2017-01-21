@@ -1,1 +1,41 @@
-Billing...
+<form action="/admin/billing" method="POST">
+  {% csrf-field %}
+  <table class="table">
+    <tr>
+      <th></th>
+      <th>username</th>
+      <th>nickname</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td><input type="checkbox" name="users" value="{{ user.id }}" checked /></td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.nickname }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <label for="month">Month</label>
+  <select id="month" name="month">
+    {% for month in months %}
+    <option value="{{ month }}">{{ month }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="year">Year</label>
+  <select id="year" name="year">
+    {% for year in years %}
+    <option value="{{ year }}">{{ year }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="fee">Fee</label>
+  <select id="fee" name="fee">
+    {% for fee in fees %}
+    <option value="{{ fee.id }}">{{ fee.display }}</option>
+    {% endfor %}
+  </select>    
+
+  <br /><br />
+  <input type="submit" value="Issue Bills" />
+</form>

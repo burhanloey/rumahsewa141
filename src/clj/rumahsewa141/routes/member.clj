@@ -3,8 +3,7 @@
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :refer [get-users
-                                          get-user-bills]]
+            [rumahsewa141.db.core :refer [get-user-bills]]
             [rumahsewa141.utils :refer [assoc-total-bills-left]]))
 
 (defn normal-view [section {{id :id username :username} :identity}]
