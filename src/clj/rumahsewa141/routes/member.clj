@@ -3,13 +3,14 @@
             [compojure.core :refer [defroutes GET]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :refer [get-user-bills]]
-            [rumahsewa141.utils :refer [assoc-total-bills-left]]))
+            [rumahsewa141.db.core :refer [get-user-bills]]))
 
 (defn normal-view [section {{id :id username :username} :identity}]
-  (let [user-bills (get-user-bills {:id id})]
-    (layout/render "member.html" (merge {:username username}
-                                        (assoc-total-bills-left user-bills)))))
+  (let [{:keys [rent internet others]} (get-user-bills {:user_id id})]
+    (layout/render "member.html" {:username username
+                                  :rent rent
+                                  :internet internet
+                                  :others others})))
 
 (defn member-page [{{admin :admin} :identity :as req}]
   (if (true? admin)

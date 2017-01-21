@@ -7,6 +7,9 @@
     <a class="nav-link{% if billing %} active{% endif %}" href="/admin/billing">Billing</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link{% if payment %} active{% endif %}" href="/admin/payment">Payment</a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link{% if manage %} active{% endif %}" href="/admin/manage">Manage</a>
   </li>
 </ul>
@@ -15,6 +18,9 @@
 {% endif %}
 {% if billing %}
 {% include "admin/admin_billing.html" %}
+{% endif %}
+{% if payment %}
+{% include "admin/admin_payment.html" %}
 {% endif %}
 {% if manage %}
 {% include "admin/admin_manage.html" %}

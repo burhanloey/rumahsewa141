@@ -3,33 +3,27 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :refer [*db*
-                                          get-fees
-                                          get-users
+            [rumahsewa141.db.core :refer [get-all-users
                                           get-all-users-info
-                                          create-bill!]]
+                                          create-transaction!]]
             [rumahsewa141.utils :refer [assoc-total-bills-left
-                                        assoc-fee-display]]
-            [conman.core :refer [with-transaction]]
-            [clojure.java.jdbc :as jdbc]))
+                                        assoc-fee-display]]))
 
-(defn get-all-users-bills-left []
-  (let [users (get-all-users-info)]
-    (map assoc-total-bills-left users)))
+(defn parse-double [num]
+  (if (clojure.string/blank? num)
+    0.00
+    (Double/parseDouble num)))
 
-(defn get-all-fees []
-  (let [fees (get-fees)]
-    (map assoc-fee-display fees)))
-
-(defn issue-bills [{{:keys [users month year fee] :as params} :params}]
+(defn do-transaction [sign {{:keys [users rent internet others]} :params}]
   (if (nil? users)
-    "Select at least one user to issue bills."
+    "Please select a user."
     (if-let [_ (doall
                 (map (fn [user]
-                       (create-bill! {:user_id (Integer/parseInt user)
-                                      :year (Integer/parseInt year)
-                                      :month (Integer/parseInt  month)
-                                      :fee_id (Integer/parseInt fee)}))
+                       (create-transaction!
+                        {:user_id (Integer/parseInt user)
+                         :rent (sign (parse-double rent))
+                         :internet (sign (parse-double internet))
+                         :others (sign (parse-double others))}))
                      (flatten (vector users))))]
       (redirect "/admin"))))
 
@@ -38,24 +32,29 @@
                                 :admin true
                                 :manage true}))
 
+(defn payment-page [{{username :username} :identity}]
+  (layout/render "member.html" {:username username
+                                :admin true
+                                :payment true
+                                :users (get-all-users)}))
+
 (defn billing-page [{{username :username} :identity}]
   (layout/render "member.html" {:username username
                                 :admin true
                                 :billing true
-                                :users (get-users)
-                                :months (take 12 (iterate inc 1))
-                                :years (take 20 (iterate inc 2017))
-                                :fees (get-all-fees)}))
+                                :users (get-all-users)}))
 
 (defn admin-page [{{username :username} :identity}]
   (layout/render "member.html" {:username username
                                 :admin true
                                 :overview true
-                                :users (get-all-users-bills-left)}))
+                                :users (get-all-users-info)}))
 
 (defroutes admin-routes
   (GET "/admin" req (admin-page req))
   (GET "/admin/billing" req (billing-page req))
-  (POST "/admin/billing" req (issue-bills req))
+  (POST "/admin/billing" req (do-transaction + req))
+  (GET "/admin/payment" req (payment-page req))
+  (POST "/admin/payment" req (do-transaction - req))
   (GET "/admin/manage" req (manage-page req))
   (GET "/admin/settings" [] ""))

@@ -1,4 +1,4 @@
-<form action="/admin/billing" method="POST">
+<form action="/admin/payment" method="POST">
   {% csrf-field %}
   <table class="table">
     <tr>
@@ -9,7 +9,7 @@
     </tr>
     {% for user in users %}
     <tr>
-      <td><input type="checkbox" name="users" value="{{ user.id }}" checked /></td>
+      <td><input type="checkbox" name="users" value="{{ user.id }}" /></td>
       <td>{{ user.username }}</td>
       <td>{{ user.nickname }}</td>
       <td>{{ user.phone_no }}</td>
@@ -27,5 +27,6 @@
   <input id="others" type="text" name="others" />
 
   <br /><br />
-  <input type="submit" value="Issue Bills" />
+  <input type="submit" value="Receive Payment">
+  
 </form>
