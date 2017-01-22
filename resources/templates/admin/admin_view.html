@@ -1,4 +1,4 @@
-<p>Hi, admin {{ username }}!</p>
+<p>Hi, {{ username }}!</p>
 <ul class="nav nav-tabs">
   <li class="nav-item">
     <a class="nav-link{% ifequal section "overview" %} active{% endifequal %}" href="/admin">Overview</a>
@@ -12,6 +12,9 @@
   <li class="nav-item">
     <a class="nav-link{% ifequal section "manage" %} active{% endifequal %}" href="/admin/manage">Manage</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/admin/settings">Settings</a>
+  </li>
 </ul>
 {% ifequal section "overview" %}
 {% include "admin/admin_overview.html" %}
@@ -24,4 +27,7 @@
 {% endifequal %}
 {% ifequal section "manage" %}
 {% include "admin/admin_manage.html" %}
+{% endifequal %}
+{% ifequal section "settings" %}
+{% include "normal/normal_settings.html" %}
 {% endifequal %}

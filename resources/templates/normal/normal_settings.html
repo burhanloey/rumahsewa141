@@ -1,0 +1,10 @@
+<form action="/admin/settings" method="POST">
+  {% csrf-field %}
+  <label for="nickname">Nickname</label>
+  <input id="nickname" type="text" name="nickname" value="{{ content.nickname }}" />
+  <br />
+  <label for="phone_no">Phone No</label>
+  <input id="phone_no" type="text" name="phone_no" value="{{ content.phone_no }}"/>
+  <br /><br />
+  <input type="submit" value="Update" />
+</form>

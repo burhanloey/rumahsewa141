@@ -7,7 +7,7 @@ VALUES (:username, :nickname, :phone_no, :password)
 -- :name update-user! :! :n
 -- :doc update an existing user record
 UPDATE users
-SET username = :username, nickname = :nickname, phone_no = :phone_no
+SET nickname = :nickname, phone_no = :phone_no
 WHERE id = :id
 
 -- :name update-user-status! :! :n
