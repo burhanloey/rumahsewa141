@@ -3,13 +3,13 @@
 <form action="/register" method="POST">
   {% csrf-field %}
   <label for="username">Username</label>
-  <input id="username" type="text" name="username" />
+  <input id="username" type="text" name="username" required />
   <br />
   <label for="nickname">Nickname</label>
   <input id="nickname" type="text" name="nickname" />
   <br />
   <label for="password">Password</label>
-  <input id="password" type="password" name="password" />
+  <input id="password" type="password" name="password" required />
   <br />
   <label for="phone_no">Phone No</label>
   <input id="phone_no" type="text" name="phone_no" />

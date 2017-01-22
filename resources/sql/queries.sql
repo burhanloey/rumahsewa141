@@ -10,6 +10,12 @@ UPDATE users
 SET username = :username, nickname = :nickname, phone_no = :phone_no
 WHERE id = :id
 
+-- :name update-user-status! :! :n
+-- :doc update user admin status given the user id
+UPDATE users
+SET admin = :admin
+WHERE id = :id
+
 -- :name get-user :? :1
 -- :doc retrieve a user given the username.
 SELECT * FROM users
@@ -18,6 +24,12 @@ WHERE username = :username
 -- :name get-all-users :? :*
 -- :doc retrieve all users.
 SELECT id, username, nickname, phone_no FROM users ORDER BY id
+
+-- :name get-other-users :? :*
+-- :doc retrieve all users except the given user id
+SELECT id, username, nickname, phone_no, admin FROM users
+WHERE id <> :id
+ORDER BY id
 
 -- :name delete-user! :! :n
 -- :doc delete a user given the username
