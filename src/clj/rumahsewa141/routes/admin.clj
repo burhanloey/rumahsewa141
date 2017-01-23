@@ -33,13 +33,6 @@
                                                  "revoke" false)}))]
       (redirect "/admin/manage"))))
 
-(defn do-update-user [{{id :id} :identity {:keys [nickname phone_no]} :params}]
-  (if-let [_ (db/update-user!
-              {:id id
-               :nickname nickname
-               :phone_no phone_no})]
-    (redirect "/admin/settings")))
-
 (defn all-users []
   {:users (db/get-all-users)})
 
