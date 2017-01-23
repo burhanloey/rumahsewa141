@@ -17,16 +17,24 @@
     {% endfor %}
   </table>
 
-  <label for="rent">Rent</label>
-  <input id="rent" type="text" name="rent" />
-  <br />
-  <label for="internet">Internet</label>
-  <input id="internet" type="text" name="internet" />
-  <br />
-  <label for="others">Others</label>
-  <input id="others" type="text" name="others" />
+  <div class="container">
+    <div class="form-inline">
+      <div class="form-group">
+        <label for="rent">Rent:</label>
+        <input class="form-control" id="rent" type="text" name="rent" />
+      </div>
 
-  <br /><br />
-  <input type="submit" value="Receive Payment">
-  
+      <div class="form-group">
+        <label for="internet">Internet:</label>
+        <input class="form-control" id="internet" type="text" name="internet" />
+      </div>
+      
+      <div class="form-group">
+        <label for="others">Others:</label>
+        <input class="form-control" id="others" type="text" name="others" />
+      </div>
+      
+      <input class="btn btn-primary pull-right" type="submit" value="Receive Payment" />
+    </div>
+  </div>  
 </form>

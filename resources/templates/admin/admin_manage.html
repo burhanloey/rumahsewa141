@@ -19,13 +19,16 @@
     {% endfor %}
   </table>
 
-  <label for="action">Select action:</label>
-  <select id="action" name="action" required>
-    <option value="" disabled selected></option>
-    <option value="assign">Assign admin</option>
-    <option value="revoke">Revoke admin</option>
-  </select>
-  <br />
-  <input type="submit" value="Submit">
+  <div class="container">
+    <div class="form-inline">
+      <label for="action">Select action:</label>
+      <select class="form-control" id="action" name="action" required>
+        <option value="" disabled selected></option>
+        <option value="assign">Assign admin</option>
+        <option value="revoke">Revoke admin</option>
+      </select>
+      <input class="btn btn-primary" type="submit" value="Submit">
+    </div>
+  </div>
   
 </form>

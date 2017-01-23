@@ -1,10 +1,21 @@
-<form action="/member/settings" method="POST">
-  {% csrf-field %}
-  <label for="nickname">Nickname</label>
-  <input id="nickname" type="text" name="nickname" value="{{ content.nickname }}" />
-  <br />
-  <label for="phone_no">Phone No</label>
-  <input id="phone_no" type="text" name="phone_no" value="{{ content.phone_no }}"/>
-  <br /><br />
-  <input type="submit" value="Update" />
-</form>
+<br />
+<div class="container">
+  <div class="col-md-6 offset-md-3">
+    <form action="/member/settings" method="POST">
+      {% csrf-field %}
+      <div class="form-group row">
+        <label for="nickname" class="col-md-3 col-form-label">Nickname</label>
+        <div class="col-md-9">
+          <input class="form-control" id="nickname" type="text" name="nickname" value="{{ content.nickname }}" />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="phone_no" class="col-md-3 col-form-label">Phone No</label>
+        <div class="col-md-9">
+          <input class="form-control" id="phone_no" type="text" name="phone_no" value="{{ content.phone_no }}"/>
+        </div>
+      </div>
+      <input class="btn btn-primary btn-block" type="submit" value="Update" />
+    </form>
+  </div>
+</div>
