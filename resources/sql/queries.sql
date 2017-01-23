@@ -51,7 +51,7 @@ SELECT
 FROM transactions
 WHERE user_id = :user_id
 
--- :name get-all-users-info :? :*
+-- :name get-all-users-summary :? :*
 -- :doc retrieve all users information.
 SELECT
  users.id, username, nickname, phone_no,
