@@ -3,7 +3,8 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :as db]))
+            [rumahsewa141.db.core :as db]
+            [rumahsewa141.routes.member :refer [user-info]]))
 
 (defn parse-double [num]
   (if (clojure.string/blank? num)
@@ -42,9 +43,6 @@
 (defn all-users-summary []
   {:users (db/get-all-users-summary)})
 
-(defn user-info [{{username :username} :identity}]
-  #(db/get-user {:username username}))
-
 (defn admin-page [section get-content-fn {{username :username} :identity}]
   (layout/render "member.html" {:username username
                                 :admin true
@@ -59,5 +57,4 @@
   (GET "/admin/settings" req (admin-page "settings" (user-info req) req))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
-  (POST "/admin/manage" req (do-manage req))
-  (POST "/admin/settings" req (do-update-user req)))
+  (POST "/admin/manage" req (do-manage req)))
