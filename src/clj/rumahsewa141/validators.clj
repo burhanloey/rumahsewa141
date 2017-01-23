@@ -1,11 +1,11 @@
 (ns rumahsewa141.validators
   (:require [bouncer.validators :as v]
-            [rumahsewa141.db.core :refer [get-user]]))
+            [rumahsewa141.db.core :as db]))
 
 (v/defvalidator username-exist
   {:default-message-format "%s does not exist."}
   [value]
-  (get-user {:username value}))
+  (db/get-user {:username value}))
 
 (v/defvalidator available-username
   {:default-message-format "%s has been taken."}

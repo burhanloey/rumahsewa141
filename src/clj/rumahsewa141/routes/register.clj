@@ -4,7 +4,7 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [clojure.java.io :as io]
-            [rumahsewa141.db.core :refer [create-user! get-user]]
+            [rumahsewa141.db.core :as db]
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
@@ -13,16 +13,13 @@
 (def default-value {:nickname ""
                     :phone_no ""})
 
-(defn register-page []
-  (layout/render "register.html"))
-
 (defn do-register! [{{:keys [username password nickname phone_no] :as params} :params}]
   (if (b/valid? params
                 :username [v/required available-username]
                 :password v/required)
 
     ;; If params is valid then register,
-    (when-let [_ (create-user!
+    (when-let [_ (db/create-user!
                   (merge default-value
                          {:username username
                           :password (hashers/encrypt password)
@@ -36,5 +33,5 @@
                             :password v/required)))))
 
 (defroutes register-routes
-  (GET "/register" [] (register-page))
+  (GET "/register" [] (layout/render "register.html"))
   (POST "/register" req (do-register! req)))

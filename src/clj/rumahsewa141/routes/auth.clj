@@ -7,7 +7,7 @@
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [rumahsewa141.db.core :refer [get-user]]))
+            [rumahsewa141.db.core :as db]))
 
 (defn login-page [{identity :identity}]
   (if (nil? identity)
@@ -15,7 +15,7 @@
     (redirect "/member")))
 
 (defn lookup-user [username password]
-  (if-let [user (get-user {:username username})]
+  (if-let [user (db/get-user {:username username})]
     (if (hashers/check password (get user :password))
       (dissoc user :password))))
 
