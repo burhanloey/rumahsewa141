@@ -1,0 +1,40 @@
+<form action="/admin/payment" method="POST">
+  {% csrf-field %}
+  <table class="table">
+    <tr>
+      <th></th>
+      <th>username</th>
+      <th>nickname</th>
+      <th>phone no</th>
+    </tr>
+    {% for user in content.users %}
+    <tr>
+      <td><input type="checkbox" name="users" value="{{ user.id }}" /></td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.nickname }}</td>
+      <td>{{ user.phone_no }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div class="container">
+    <div class="form-inline">
+      <div class="form-group">
+        <label for="rent">Rent:</label>
+        <input class="form-control" id="rent" type="text" name="rent" />
+      </div>
+
+      <div class="form-group">
+        <label for="internet">Internet:</label>
+        <input class="form-control" id="internet" type="text" name="internet" />
+      </div>
+      
+      <div class="form-group">
+        <label for="others">Others:</label>
+        <input class="form-control" id="others" type="text" name="others" />
+      </div>
+      
+      <input class="btn btn-primary pull-right" type="submit" value="Receive Payment" />
+    </div>
+  </div>  
+</form>

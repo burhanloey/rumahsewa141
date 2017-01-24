@@ -1,0 +1,32 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "overview" %} active{% endifequal %}" href="/admin">Overview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "billing" %} active{% endifequal %}" href="/admin/billing">Billing</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "payment" %} active{% endifequal %}" href="/admin/payment">Payment</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "manage" %} active{% endifequal %}" href="/admin/manage">Manage</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/admin/settings">Settings</a>
+  </li>
+</ul>
+{% ifequal section "overview" %}
+{% include "admin/admin_overview.html" %}
+{% endifequal %}
+{% ifequal section "billing" %}
+{% include "admin/admin_billing.html" %}
+{% endifequal %}
+{% ifequal section "payment" %}
+{% include "admin/admin_payment.html" %}
+{% endifequal %}
+{% ifequal section "manage" %}
+{% include "admin/admin_manage.html" %}
+{% endifequal %}
+{% ifequal section "settings" %}
+{% include "normal/normal_settings.html" %}
+{% endifequal %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+  <form action="/register" method="POST">
+    {% csrf-field %}
+    <div class="form-group row">
+      <label for="username" class="col-md-3 col-form-label">Username</label>
+      <div class="col-md-9">
+        <input class="form-control" id="username" type="text" name="username" required />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="nickname" class="col-md-3 col-form-label">Nickname</label>
+      <div class="col-md-9">
+        <input class="form-control" id="nickname" type="text" name="nickname" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="password" class="col-md-3 col-form-label">Password</label>
+      <div class="col-md-9">
+        <input class="form-control" id="password" type="password" name="password" required />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="phone_no" class="col-md-3 col-form-label">Phone No</label>
+      <div class="col-md-9">
+        <input class="form-control" id="phone_no" type="text" name="phone_no" />
+      </div>
+    </div>
+    <div class="">
+      <input class="btn btn-primary btn-block" type="submit" value="Register" />
+    </div>
+  </form>
+</div>
+{% endblock %}

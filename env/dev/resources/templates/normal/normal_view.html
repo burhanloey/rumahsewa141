@@ -1,0 +1,15 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "overview" %} active{% endifequal %}" href="/member">Overview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/member/settings">Settings</a>
+  </li>
+</ul>
+
+{% ifequal section "overview" %}
+{% include "normal/normal_overview.html" %}
+{% endifequal %}
+{% ifequal section "settings" %}
+{% include "normal/normal_settings.html" %}
+{% endifequal %}

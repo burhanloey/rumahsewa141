@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="navbar navbar-light bg-faded">
+  <form class="form-inline" action="/logout" method="POST">
+    {% csrf-field %}
+    <span class="navbar-text">Hi, {{ username }}!</span>
+    <input class="btn btn-sm btn-outline-primary pull-right" type="submit" name="logout" value="Log Out" />
+  </form>
+</nav>
+
+{% if admin %}
+{% include "admin/admin_view.html" %}
+{% else %}
+{% include "normal/normal_view.html" %}
+{% endif %}
+
+{% endblock %}
