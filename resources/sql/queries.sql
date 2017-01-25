@@ -32,15 +32,26 @@ WHERE id <> :id
 ORDER BY id
 
 -- :name delete-user! :! :n
--- :doc delete a user given the username
+-- :doc delete a user given the id
 DELETE FROM users
-WHERE username = :username
+WHERE id = :id
 
 -- :name create-transaction! :! :n
 -- :doc create a new transaction record
 INSERT INTO transactions
 (user_id, rent, internet, others, transaction_timestamp)
 VALUES (:user_id, :rent, :internet, :others, CURRENT_TIMESTAMP)
+
+-- :name get-latest-transactions :? :*
+-- :doc retrieve latest transactions given an offset
+SELECT username, rent, internet, others, transaction_timestamp
+FROM transactions INNER JOIN users ON (transactions.user_id = users.id)
+ORDER BY transaction_timestamp DESC
+LIMIT 10 OFFSET :offset
+
+-- :name get-transactions-count :? :1
+-- :doc retrieve total count of all transactions
+SELECT COUNT(*) AS tcount FROM transactions
 
 -- :name get-user-bills :? :1
 -- :doc retrieve user bills given the id

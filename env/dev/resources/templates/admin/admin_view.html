@@ -12,6 +12,9 @@
     <a class="nav-link{% ifequal section "manage" %} active{% endifequal %}" href="/admin/manage">Manage</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link{% ifequal section "history" %} active{% endifequal %}" href="/admin/history/1">History</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/admin/settings">Settings</a>
   </li>
 </ul>
@@ -26,6 +29,9 @@
 {% endifequal %}
 {% ifequal section "manage" %}
 {% include "admin/admin_manage.html" %}
+{% endifequal %}
+{% ifequal section "history" %}
+{% include "admin/admin_history.html" %}
 {% endifequal %}
 {% ifequal section "settings" %}
 {% include "normal/normal_settings.html" %}

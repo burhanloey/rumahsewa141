@@ -1,22 +1,26 @@
 <form action="/admin/manage" method="POST">
   {% csrf-field %}
-  <table class="table">
-    <tr>
-      <th></th>
-      <th>username</th>
-      <th>nickname</th>
-      <th>phone no</th>
-      <th>admin?</th>
-    </tr>
-    {% for user in content.users %}
-    <tr>
-      <td><input type="checkbox" name="users" value="{{ user.id }}" /></td>
-      <td>{{ user.username }}</td>
-      <td>{{ user.nickname }}</td>
-      <td>{{ user.phone_no }}</td>
-      <td>{% if user.admin %}<i class="fa fa-check"></i>{% endif %}</td>
-    </tr>
-    {% endfor %}
+  <table class="table table-hover">
+    <thead class="thead-default">
+      <tr>
+        <th></th>
+        <th>username</th>
+        <th>nickname</th>
+        <th>phone no</th>
+        <th>admin?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in content.users %}
+      <tr>
+        <td><input type="checkbox" name="users" value="{{ user.id }}" /></td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.nickname }}</td>
+        <td>{{ user.phone_no }}</td>
+        <td>{% if user.admin %}<i class="fa fa-check"></i>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 
   <div class="container">
@@ -26,6 +30,7 @@
         <option value="" disabled selected></option>
         <option value="assign">Assign admin</option>
         <option value="revoke">Revoke admin</option>
+        <option value="delete">Delete user</option>
       </select>
       <input class="btn btn-primary" type="submit" value="Submit">
     </div>

@@ -8,7 +8,7 @@ CREATE TABLE users
 --;;
 CREATE TABLE transactions
 (id SERIAL PRIMARY KEY,
- user_id INTEGER REFERENCES users (id),
+ user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
  rent DECIMAL(12,2),
  internet DECIMAL(12,2),
  others DECIMAL(12,2),
