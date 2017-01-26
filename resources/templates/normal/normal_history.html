@@ -1,0 +1,39 @@
+<table class="table table-sm table-hover">
+  <thead class="thead-default">
+    <tr>
+      <th class="col-md-4 text-xs-center">timestamp</th>
+      <th class="col-md-8 text-xs-center">description</th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for transaction in content.transactions %}
+    <tr>
+      <td class="col-md-4 text-xs-center">{{ transaction.timestamp }}</td>
+      <td class="col-md-8">{{ transaction.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="text-xs-center">
+  <nav aria-label="History pages">
+    <ul class="pagination pagination-sm">
+      <li class="page-item{% ifequal content.prev_page 0 %} disabled{% endifequal %}">
+        <a class="page-link" href="/member/history/{{ content.prev_page }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {% for page in content.pages %}
+      <li class="page-item{% ifequal page content.current_page %} disabled{% endifequal %}">
+        <a class="page-link" href="/member/history/{{ page }}">{{ page }}</a>
+      </li>
+      {% endfor %}
+      <li class="page-item{% if content.no_next_page %} disabled{% endif %}">
+        <a class="page-link" href="/member/history/{{ content.next_page }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -5,8 +5,7 @@
             [clojure.java.io :as io]))
 
 (defn home-page []
-  (layout/render
-   "home.html" {:docs (-> "docs/docs.md" io/resource slurp)}))
+  (layout/render "home.html" {:docs "Best landing page here."}))
 
 (defroutes home-routes
   (GET "/" [] (home-page))

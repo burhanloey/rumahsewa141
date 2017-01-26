@@ -1,20 +1,26 @@
-<table class="table">
-  <tr>
-    <th>username</th>
-    <th>nickname</th>
-    <th>phone no</th>
-    <th>rent</th>
-    <th>internet</th>
-    <th>other</th>
-  </tr>
-  {% for user in content.users %}
-  <tr>
-    <td>{{ user.username }}</td>
-    <td>{{ user.nickname }}</td>
-    <td>{{ user.phone_no }}</td>
-    <td>{{ user.rent }}</td>
-    <td>{{ user.internet }}</td>
-    <td>{{ user.others }}</td>
-  </tr>
-  {% endfor %}
+<table class="table table-sm table-hover">
+  <thead class="thead-default">
+    <tr>
+      <th></th>
+      <th>username</th>
+      <th>nickname</th>
+      <th>phone no</th>
+      <th>rent</th>
+      <th>internet</th>
+      <th>other</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in content.users %}
+    <tr>
+      <td>{{ user.index }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.nickname }}</td>
+      <td>{{ user.phone_no }}</td>
+      <td>{{ user.rent }}</td>
+      <td>{{ user.internet }}</td>
+      <td>{{ user.others }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
