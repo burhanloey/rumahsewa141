@@ -85,12 +85,23 @@
    :timestamp transaction_timestamp})
 
 (defn latest-transactions [page]
-  #(let [{tcount :tcount} (db/get-transactions-count)
+  #(let [max-items        10            ; max no of items displayed 
+         prange           5             ; pagination range
+         {tcount :tcount} (db/get-transactions-count)
+         total-pages      (inc (quot tcount max-items)) 
          transactions     (db/get-latest-transactions
-                           {:offset (* 10 (dec (Long/parseLong page)))})]
-     {:transactions (map describe-transaction transactions)
-      :current_page page
-      :pages (take (/ tcount 10) (iterate inc 1))}))
+                           {:max_items max-items
+                            :offset (* (dec page) max-items)})
+         first-page       (inc (* (quot (dec page) prange) prange))
+         pages            (take prange (iterate inc first-page))
+         has-page?        (fn [page] (< page (inc total-pages)))
+         available-pages  (take-while has-page? pages)]
+     {:transactions  (map describe-transaction transactions)
+      :current_page  page
+      :prev_page     (dec first-page)
+      :pages         available-pages
+      :next_page     (inc (last pages))
+      :no_next_page  (< (count available-pages) prange)}))
 
 (defn admin-page [section get-content-fn {{username :username} :identity}]
   (layout/render "member.html" {:username username
@@ -103,8 +114,8 @@
   (GET "/admin/billing" req (admin-page "billing" all-users req))
   (GET "/admin/payment" req (admin-page "payment" all-users req))
   (GET "/admin/manage" req (admin-page "manage" (other-users req) req))
-  (GET ["/admin/history/:page" :page #"[0-9]+"] [page :as req]
-       (admin-page "history" (latest-transactions page) req))
+  (GET ["/admin/history/:page" :page #"[1-9][0-9]*"] [page :as req]
+       (admin-page "history" (latest-transactions (Long/parseLong page)) req))
   (GET "/admin/settings" req (admin-page "settings" (user-info req) req))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))

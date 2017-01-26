@@ -47,7 +47,7 @@ VALUES (:user_id, :rent, :internet, :others, CURRENT_TIMESTAMP)
 SELECT username, rent, internet, others, transaction_timestamp
 FROM transactions INNER JOIN users ON (transactions.user_id = users.id)
 ORDER BY transaction_timestamp DESC
-LIMIT 10 OFFSET :offset
+LIMIT :max_items OFFSET :offset
 
 -- :name get-transactions-count :? :1
 -- :doc retrieve total count of all transactions
