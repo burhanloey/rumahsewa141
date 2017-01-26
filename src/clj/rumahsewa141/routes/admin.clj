@@ -88,7 +88,9 @@
   #(let [max-items        10            ; max no of items displayed 
          prange           5             ; pagination range
          {tcount :tcount} (db/get-transactions-count)
-         total-pages      (inc (quot tcount max-items)) 
+         total-pages      (if (zero? (mod tcount max-items))
+                            (quot tcount max-items)
+                            (inc (quot tcount max-items))) 
          transactions     (db/get-latest-transactions
                            {:max_items max-items
                             :offset (* (dec page) max-items)})
@@ -101,7 +103,8 @@
       :prev_page     (dec first-page)
       :pages         available-pages
       :next_page     (inc (last pages))
-      :no_next_page  (< (count available-pages) prange)}))
+      :no_next_page  (or (< (count available-pages) prange)
+                         (= (last pages) total-pages))}))
 
 (defn admin-page [section get-content-fn {{username :username} :identity}]
   (layout/render "member.html" {:username username
