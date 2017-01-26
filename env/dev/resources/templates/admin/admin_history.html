@@ -1,15 +1,15 @@
 <table class="table table-sm table-hover">
   <thead class="thead-default">
     <tr>
-      <th class="text-xs-center">timestamp</th>
-      <th class="text-xs-center">description</th>      
+      <th class="col-md-4 text-xs-center">timestamp</th>
+      <th class="col-md-8 text-xs-center">description</th>      
     </tr>
   </thead>
   <tbody>
     {% for transaction in content.transactions %}
     <tr>
-      <td class="text-xs-center">{{ transaction.timestamp }}</td>
-      <td>{{ transaction.description }}</td>
+      <td class="col-md-4 text-xs-center">{{ transaction.timestamp }}</td>
+      <td class="col-md-8">{{ transaction.description }}</td>
     </tr>
     {% endfor %}
   </tbody>

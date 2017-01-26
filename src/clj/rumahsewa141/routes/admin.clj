@@ -14,9 +14,10 @@
     :else n))
 
 (defn parse-double [num]
-  (if (number? num)
-    (Double/parseDouble num)
-    0.00))
+  ;; if num string does not match decimal regex with a precision of 2
+  (if (nil? (re-find #"^[0-9]+(\.[0-9]{1,2})?$" num))
+    0.00
+    (Double/parseDouble num)))
 
 (defn do-to-selected [users f]
   (doall (map f (flatten (vector users)))))
@@ -43,11 +44,10 @@
 (defn do-manage [{{:keys [users action]} :params}]
   (if (nil? users)
     "Please select a user."
-    (if-let [_ (do-to-selected users
-                               (case action
-                                 "delete" #(db/delete-user!
-                                            {:id (Integer/parseInt %)})
-                                 :else #(db/update-user-status!
+    (if-let [_ (do-to-selected users (if (= action "delete")
+                                       #(db/delete-user!
+                                         {:id (Integer/parseInt %)})
+                                       #(db/update-user-status!
                                          {:id (Integer/parseInt %)
                                           :admin (case action
                                                    "assign" true
@@ -61,7 +61,9 @@
   (fn [] {:users (db/get-other-users {:id id})}))
 
 (defn all-users-summary []
-  {:users (db/get-all-users-summary)})
+  (let [users-summary (db/get-all-users-summary)
+        index         (iterate inc 1)]
+    {:users (map #(assoc %1 :index %2) users-summary index)}))
 
 (defn find-verb [a b c]
   (if (or (pos? a) (pos? b) (pos? c))
@@ -70,13 +72,16 @@
 
 (defn describe-transaction [{:keys [username rent
                                     internet others transaction_timestamp]}]
-  {:description (str username " " (find-verb rent internet others) " "
-                     (when-not (zero? rent)
-                       (str "RM " (abs rent) " for rent"))
-                     (when-not (zero? internet)
-                       (str ", RM " (abs internet) " for internet"))
-                     (when-not (zero? others)
-                       (str ", and RM " (abs others) " for others")))
+  {:description (apply
+                 str
+                 (drop-last
+                  (str username " " (find-verb rent internet others)
+                       (when-not (zero? rent)
+                         (str " RM " (abs rent) " for rent,"))
+                       (when-not (zero? internet)
+                         (str " RM " (abs internet) " for internet,"))
+                       (when-not (zero? others)
+                         (str "  RM " (abs others) " for other bills,")))))
    :timestamp transaction_timestamp})
 
 (defn latest-transactions [page]

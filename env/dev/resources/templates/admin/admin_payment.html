@@ -1,6 +1,6 @@
 <form action="/admin/payment" method="POST">
   {% csrf-field %}
-  <table class="table table-hover">
+  <table class="table table-sm table-hover">
     <thead class="thead-default">
       <tr>
         <th></th>
@@ -27,7 +27,7 @@
         <label for="rent">Rent:</label>
         <input class="form-control" id="rent" type="text" name="rent" />
       </div>
-
+      
       <div class="form-group">
         <label for="internet">Internet:</label>
         <input class="form-control" id="internet" type="text" name="internet" />
