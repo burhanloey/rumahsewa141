@@ -34,10 +34,11 @@
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats)
         (wrap-routes middleware/wrap-admin-only))    
+    (route/resources "/")
     (route/not-found
-      (:body
-        (error-page {:status 404
-                     :title "page not found"})))))
+     (:body
+      (error-page {:status 404
+                   :title "page not found"})))))
 
 
 (defn app [] (middleware/wrap-base #'app-routes))
