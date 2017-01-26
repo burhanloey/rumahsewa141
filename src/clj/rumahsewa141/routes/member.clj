@@ -11,7 +11,9 @@
               {:id id
                :nickname nickname
                :phone_no phone_no})]
-    (layout/render "success.html")))
+    (layout/render "success.html"
+                   {:title "Done!"
+                    :description "You have updated your info."})))
 
 (defn user-bills [{{id :id} :identity}]
   #(db/get-user-bills {:user_id id}))

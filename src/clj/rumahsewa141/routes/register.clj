@@ -25,12 +25,20 @@
                           :password (hashers/encrypt password)
                           :nickname nickname
                           :phone_no phone_no}))]
-      "You have been registered.")
+      (layout/render "success.html" {:title "Success!"
+                                     :description "You have been registered."}))
 
     ;; else, display errors.
-    (str (first (b/validate params
-                            :username [v/required available-username]
-                            :password v/required)))))
+    (layout/render
+     "error_message.html"
+     {:title "Registration failed!"
+      :description (apply str
+                          (:username
+                           (first
+                            (b/validate
+                             params
+                             :username [v/required available-username]
+                             :password v/required))))})))
 
 (defroutes register-routes
   (GET "/register" [] (layout/render "register.html"))

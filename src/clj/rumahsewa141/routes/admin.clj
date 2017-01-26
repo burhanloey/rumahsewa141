@@ -12,23 +12,33 @@
   (doall (map f (flatten (vector users)))))
 
 (defn do-transaction [sign {{:keys [users rent internet others]} :params}]
-  (let [parsed-rent (parse-double rent)
-        parsed-internet (parse-double internet)
-        parsed-others (parse-double others)]
+  (let [pr (parse-double rent)
+        pi (parse-double internet)
+        po (parse-double others)]
     (cond
-      (nil? users) "Please select a user."
+      (nil? users) (layout/render "error_message.html"
+                                  {:title "Failed!"
+                                   :description "Please select a user."})
     
-      (and (zero? parsed-rent)
-           (zero? parsed-internet)
-           (zero? parsed-others)) "No point if no money involved."
+      (and (zero? pr)
+           (zero? pi)
+           (zero? po)) (layout/render "error_message.html"
+                                      {:title
+                                       "Failed!"
+                                       :description
+                                       "No point if no money involved."})
     
       :else (if-let [_ (do-to-selected users
                                        #(db/create-transaction!
                                          {:user_id (Integer/parseInt %)
-                                          :rent (sign parsed-rent)
-                                          :internet (sign parsed-internet)
-                                          :others (sign parsed-others)}))]
-              (redirect "/admin")))))
+                                          :rent (sign pr)
+                                          :internet (sign pi)
+                                          :others (sign po)}))]
+              (layout/render "success.html"
+                             {:title "Done!"
+                              :description (if (pos? (sign 1))
+                                             "Billed successfully."
+                                             "Payment received.")})))))
 
 (defn do-manage [{{:keys [users action]} :params}]
   (if (nil? users)

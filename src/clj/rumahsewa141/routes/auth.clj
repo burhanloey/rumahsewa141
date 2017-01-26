@@ -28,7 +28,9 @@
     (if-let [{admin :admin :as user} (lookup-user username password)]
       (-> (redirect (if (true? admin) "/admin" "/member"))
           (assoc :session (assoc session :identity user)))
-      "Wrong username or password.")
+      (layout/render "error_message.html"
+                     {:title "Failed login"
+                      :description "Wrong username or password."}))
 
     ;; else, display errors.
     (str (first (b/validate params
