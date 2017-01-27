@@ -11,6 +11,12 @@
 (defn do-to-selected [users f]
   (doall (map f (flatten (vector users)))))
 
+(defn update-registration-config [{{action :action} :params}]
+  (if-let [_ (case action
+               "allow" (db/allow-registration)
+               "close" (db/close-registration))]
+    (redirect "/admin/settings/registration")))
+
 (defn do-transaction [sign {{:keys [users rent internet others]} :params}]
   (let [pr (parse-double rent)
         pi (parse-double internet)
@@ -80,6 +86,9 @@
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))
 
+(defn registration-allowed? []
+  {:allowed (:value (db/get-registration-config))})
+
 (defroutes admin-routes
   (GET "/admin" req (admin-page "overview" all-users-summary req))
   (GET "/admin/billing" req (admin-page "billing" all-users req))
@@ -93,7 +102,11 @@
                                                     req
                                                     (user-info req)))
   (GET "/admin/settings/account" req (settings-page "account" req))
+  (GET "/admin/settings/registration" req (settings-page "registration"
+                                                         req
+                                                         registration-allowed?))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
-  (POST "/admin/manage" req (do-manage req)))
+  (POST "/admin/manage" req (do-manage req))
+  (POST "/admin/settings/registration" req (update-registration-config req)))
 

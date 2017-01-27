@@ -13,3 +13,10 @@ CREATE TABLE transactions
  internet DECIMAL(12,2),
  others DECIMAL(12,2),
  transaction_timestamp TIMESTAMP);
+--;;
+CREATE TABLE config
+(name VARCHAR(30) PRIMARY KEY,
+ value BOOLEAN);
+--;;
+INSERT INTO config (name, value)
+VALUES ('allow_registration', TRUE);

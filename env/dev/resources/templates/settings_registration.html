@@ -1,0 +1,11 @@
+<div class="col-md-8 offset-md-2 text-xs-center">
+    <p>Current status: {% if content.allowed %}Allowed{% else %}Closed{% endif %}</p>
+    <br />
+    <br />
+    <form action="/admin/settings/registration" method="POST">
+        {% csrf-field %}
+        <button class="btn {% if content.allowed %}btn-danger{% else %}btn-primary{% endif %}" type="submit" name="action" value="{% if content.allowed %}close{% else %}allow{% endif %}">
+            {% if content.allowed %}Close registration{% else %}Allow registration{% endif %}
+        </button>
+    </form>
+</div>

@@ -49,6 +49,8 @@
                              :confirm v/required))))})))
 
 (defroutes register-routes
-  (GET "/register" [] (layout/render "register.html"))
+  (GET "/register" [] (layout/render "register.html"
+                                     {:allowed (:value
+                                                (db/get-registration-config))}))
   (POST "/register" req (do-register! req)))
     

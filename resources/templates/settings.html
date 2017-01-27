@@ -7,6 +7,11 @@
         <li class="nav-item">
             <a class="nav-link{% ifequal subsection "account" %} active{% endifequal %}" href="/{% if admin %}admin{% else %}member{% endif %}/settings/account">Account</a>
         </li>
+        {% if admin %}
+        <li class="nav-item">
+            <a class="nav-link{% ifequal subsection "registration" %} active{% endifequal %}" href="/admin/settings/registration">Registration</a>
+        </li>
+        {% endif %}
     </ul>
 </div>
 <div class="col-md-9">
@@ -16,6 +21,9 @@
         {% endifequal %}
         {% ifequal subsection "account" %}
         {% include "/settings_account.html" %}
+        {% endifequal %}
+        {% ifequal subsection "registration" %}
+        {% include "/settings_registration.html" %}
         {% endifequal %}
     </div>
 </div>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% if allowed %}
 <div class="col-md-6 offset-md-3">
   <form action="/register" method="POST">
     {% csrf-field %}
@@ -38,4 +39,9 @@
     </div>
   </form>
 </div>
+{% else %}
+<div class="alert alert-info" role="alert">
+    Registration is closed. Please contact administrator for assistance. Thank you.
+</div>
+{% endif %}
 {% endblock %}
