@@ -1,0 +1,21 @@
+<br />
+<div class="col-md-3">
+    <ul class="nav nav-pills nav-stacked">
+        <li class="nav-item">
+            <a class="nav-link{% ifequal subsection "profile" %} active{% endifequal %}" href="/{% if admin %}admin{% else %}member{% endif %}/settings/profile">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% ifequal subsection "account" %} active{% endifequal %}" href="/{% if admin %}admin{% else %}member{% endif %}/settings/account">Account</a>
+        </li>
+    </ul>
+</div>
+<div class="col-md-9">
+    <div class="container">
+        {% ifequal subsection "profile" %}
+        {% include "/settings_profile.html" %}
+        {% endifequal %}
+        {% ifequal subsection "account" %}
+        {% include "/settings_account.html" %}
+        {% endifequal %}
+    </div>
+</div>

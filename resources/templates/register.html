@@ -4,26 +4,32 @@
   <form action="/register" method="POST">
     {% csrf-field %}
     <div class="form-group row">
-      <label for="username" class="col-md-3 col-form-label">Username</label>
-      <div class="col-md-9">
+      <label for="username" class="col-md-4 col-form-label">Username</label>
+      <div class="col-md-8">
         <input class="form-control" id="username" type="text" name="username" required />
       </div>
     </div>
     <div class="form-group row">
-      <label for="nickname" class="col-md-3 col-form-label">Nickname</label>
-      <div class="col-md-9">
+      <label for="nickname" class="col-md-4 col-form-label">Nickname</label>
+      <div class="col-md-8">
         <input class="form-control" id="nickname" type="text" name="nickname" />
       </div>
     </div>
     <div class="form-group row">
-      <label for="password" class="col-md-3 col-form-label">Password</label>
-      <div class="col-md-9">
+      <label for="password" class="col-md-4 col-form-label">Password</label>
+      <div class="col-md-8">
         <input class="form-control" id="password" type="password" name="password" required />
       </div>
     </div>
     <div class="form-group row">
-      <label for="phone_no" class="col-md-3 col-form-label">Phone No</label>
-      <div class="col-md-9">
+        <label for="confirm" class="col-md-4 col-form-label">Confirm password</label>
+        <div class="col-md-8">
+            <input class="form-control" id="confirm" type="password" name="confirm" required />
+        </div>
+    </div>
+    <div class="form-group row">
+      <label for="phone_no" class="col-md-4 col-form-label">Phone No</label>
+      <div class="col-md-8">
         <input class="form-control" id="phone_no" type="text" name="phone_no" />
       </div>
     </div>

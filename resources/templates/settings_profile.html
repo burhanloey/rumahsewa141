@@ -1,0 +1,21 @@
+<div class="col-md-8 offset-md-2">
+    <form action="/settings/profile" method="POST">
+        {% csrf-field %}
+        <div class="form-group row">
+            <label for="nickname" class="col-md-4 col-form-label">Nickname</label>
+            <div class="col-md-8">
+                <input class="form-control" id="nickname" type="text" name="nickname" value="{{ content.nickname }}" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="phone_no" class="col-md-4 col-form-label">Phone No</label>
+            <div class="col-md-8">
+                <input class="form-control" id="phone_no" type="text" name="phone_no" value="{{ content.phone_no }}"/>
+            </div>
+        </div>
+        <br />
+        <br />
+        <input class="btn btn-primary" type="submit" value="Update Profile" />
+    </form>
+</div>
+

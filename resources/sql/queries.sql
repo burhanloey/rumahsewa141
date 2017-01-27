@@ -10,6 +10,11 @@ UPDATE users
 SET nickname = :nickname, phone_no = :phone_no
 WHERE id = :id
 
+-- :name change-password! :! :n
+UPDATE users
+SET password = :password
+WHERE id = :id
+
 -- :name update-user-status! :! :n
 -- :doc update user admin status given the user id
 UPDATE users

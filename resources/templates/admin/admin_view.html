@@ -15,7 +15,7 @@
     <a class="nav-link{% ifequal section "history" %} active{% endifequal %}" href="/admin/history/1">History</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/admin/settings">Settings</a>
+    <a class="nav-link{% ifequal section "settings" %} active{% endifequal %}" href="/admin/settings/profile">Settings</a>
   </li>
 </ul>
 {% ifequal section "overview" %}
@@ -34,5 +34,5 @@
 {% include "admin/admin_history.html" %}
 {% endifequal %}
 {% ifequal section "settings" %}
-{% include "normal/normal_settings.html" %}
+{% include "settings.html" %}
 {% endifequal %}

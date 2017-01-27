@@ -67,11 +67,18 @@
 (defn latest-transactions [params]
   (db/get-latest-transactions params))
 
-(defn admin-page [section get-content-fn {{username :username} :identity}]
+(defn admin-page [section get-content-fn
+                  {{username :username} :identity} & [subsection]]
   (layout/render "member.html" {:username username
                                 :admin true
                                 :section section
-                                :content (get-content-fn)}))
+                                :subsection subsection
+                                :content (if (nil? get-content-fn)
+                                           ""
+                                           (get-content-fn))}))
+
+(defn settings-page [subsection req & [get-content-fn]]
+  (admin-page "settings" get-content-fn req subsection))
 
 (defroutes admin-routes
   (GET "/admin" req (admin-page "overview" all-users-summary req))
@@ -82,7 +89,10 @@
        (admin-page "history" (history-view (Long/parseLong page)
                                            transactions-count
                                            latest-transactions) req))
-  (GET "/admin/settings" req (admin-page "settings" (user-info req) req))
+  (GET "/admin/settings/profile" req (settings-page "profile"
+                                                    req
+                                                    (user-info req)))
+  (GET "/admin/settings/account" req (settings-page "account" req))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
   (POST "/admin/manage" req (do-manage req)))
