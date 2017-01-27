@@ -17,15 +17,12 @@
         po (parse-double others)]
     (cond
       (nil? users) (layout/render "error_message.html"
-                                  {:title "Failed!"
-                                   :description "Please select a user."})
+                                  {:description "Please select a user."})
     
       (and (zero? pr)
            (zero? pi)
            (zero? po)) (layout/render "error_message.html"
-                                      {:title
-                                       "Failed!"
-                                       :description
+                                      {:description
                                        "No point if no money involved."})
     
       :else (if-let [_ (do-to-selected users
@@ -37,12 +34,12 @@
               (layout/render "success.html"
                              {:title "Done!"
                               :description (if (pos? (sign 1))
-                                             "Billed successfully."
+                                             "Selected users billed successfully."
                                              "Payment received.")})))))
 
 (defn do-manage [{{:keys [users action]} :params}]
   (if (nil? users)
-    "Please select a user."
+    (layout/render "error_message.html" {:description "Please select a user."})
     (if-let [_ (do-to-selected users (if (= action "delete")
                                        #(db/delete-user!
                                          {:id (Integer/parseInt %)})
@@ -89,3 +86,4 @@
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
   (POST "/admin/manage" req (do-manage req)))
+

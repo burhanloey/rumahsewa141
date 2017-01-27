@@ -13,20 +13,27 @@
 (def default-value {:nickname ""
                     :phone_no ""})
 
-(defn do-register! [{{:keys [username password nickname phone_no] :as params} :params}]
+(defn do-register! [{{:keys [username password
+                             confirm nickname
+                             phone_no] :as params} :params}]
   (if (b/valid? params
                 :username [v/required available-username]
-                :password v/required)
+                :password v/required
+                :confirm v/required)
 
     ;; If params is valid then register,
-    (when-let [_ (db/create-user!
-                  (merge default-value
-                         {:username username
-                          :password (hashers/encrypt password)
-                          :nickname nickname
-                          :phone_no phone_no}))]
-      (layout/render "success.html" {:title "Success!"
-                                     :description "You have been registered."}))
+    (if (= password confirm)
+      (when-let [_ (db/create-user!
+                    (merge default-value
+                           {:username username
+                            :password (hashers/encrypt password)
+                            :nickname nickname
+                            :phone_no phone_no}))]
+        (layout/render "success.html" {:title "Success!"
+                                       :description
+                                       "You have been registered."}))
+      (layout/render "error_message.html" {:description
+                                           "Wrong password confirmation."}))
 
     ;; else, display errors.
     (layout/render
@@ -38,8 +45,10 @@
                             (b/validate
                              params
                              :username [v/required available-username]
-                             :password v/required))))})))
+                             :password v/required
+                             :confirm v/required))))})))
 
 (defroutes register-routes
   (GET "/register" [] (layout/render "register.html"))
   (POST "/register" req (do-register! req)))
+    
