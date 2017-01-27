@@ -34,7 +34,6 @@
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats)
         (wrap-routes middleware/wrap-admin-only))    
-    (route/resources "/")
     (route/not-found
      (:body
       (error-page {:status 404
