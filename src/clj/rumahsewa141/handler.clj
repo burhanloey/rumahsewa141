@@ -18,20 +18,20 @@
 (def app-routes
   (routes
     (-> #'home-routes
-        ;; (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
     (-> #'register-routes
-        ;; (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
     (-> #'auth-routes
-        ;; (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
     (-> #'member-routes
-        ;; (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats)
         (wrap-routes middleware/wrap-restricted))
     (-> #'admin-routes
-        ;; (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats)
         (wrap-routes middleware/wrap-admin-only))    
     (route/not-found
