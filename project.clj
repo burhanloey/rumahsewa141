@@ -27,7 +27,8 @@
                  [ring-middleware-format "0.7.0"]
                  [ring-webjars "0.1.1"]
                  [ring/ring-defaults "0.2.1"]
-                 [selmer "1.10.3"]]
+                 [selmer "1.10.3"]
+                 [prone "1.1.4"]]
 
   :min-lein-version "2.0.0"
 
