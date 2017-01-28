@@ -84,9 +84,7 @@
                                         (get-content-fn)))))
 
 (defn admin-page-test []
-  (layout/render "member.html" {:username "dingdong"
-                                :admin true
-                                :section "overview"}))
+  (layout/render "member.html"))
 
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))
