@@ -83,9 +83,6 @@
                                         nil
                                         (get-content-fn)))))
 
-(defn admin-page-test []
-  (layout/render "member.html"))
-
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))
 
@@ -93,7 +90,7 @@
   {:allowed (:value (db/get-registration-config))})
 
 (defroutes admin-routes
-  (GET "/admin" req (admin-page-test))
+  (GET "/admin" req (admin-page "overview" all-users-summary req))
   (GET "/admin/billing" req (admin-page "billing" all-users req))
   (GET "/admin/payment" req (admin-page "payment" all-users req))
   (GET "/admin/manage" req (admin-page "manage" (other-users req) req))
