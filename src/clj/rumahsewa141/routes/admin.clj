@@ -75,13 +75,13 @@
 
 (defn admin-page [section get-content-fn
                   {{username :username} :identity} & [subsection]]
-  (layout/render "member.html" {:username username
-                                :admin true
-                                :section section
-                                :subsection subsection
-                                :content (if (nil? get-content-fn)
-                                           ""
-                                           (get-content-fn))}))
+  (layout/render "member.html" (merge {:username username
+                                       :admin true
+                                       :section section
+                                       :subsection subsection}
+                                      (if (nil? get-content-fn)
+                                        nil
+                                        (get-content-fn)))))
 
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))

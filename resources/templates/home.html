@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-  <div class="col-sm-12">
-    {{docs|markdown}}
+  <div class="col-md-8 offset-md-2">
+      <div class="jumbotron">
+          <h1 class="display-3">rumahsewa141</h1>
+          <p class="lead">Rent and bills management.</p>
+          <hr class="my-4">
+          <p>
+              141, Jalan 17/4, Seksyen 17,<br />
+              46400 Petaling Jaya, Selangor
+          </p>
+          <br />
+          <br />
+          <p><a class="btn btn-outline-primary btn-lg" href="/login" role="button">Log In</a></p>
+      </div>
   </div>
 </div>
 {% endblock %}

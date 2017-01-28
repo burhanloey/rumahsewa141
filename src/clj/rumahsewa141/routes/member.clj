@@ -52,12 +52,12 @@
                    {{:keys [username admin]} :identity} & [subsection]]
   (if (true? admin)
     (redirect "/admin")
-    (layout/render "member.html" {:username username
-                                  :section section
-                                  :subsection subsection
-                                  :content (if (nil? get-content-fn)
-                                             ""
-                                             (get-content-fn))})))
+    (layout/render "member.html" (merge {:username username
+                                         :section section
+                                         :subsection subsection}
+                                        (if (nil? get-content-fn)
+                                          nil
+                                          (get-content-fn))))))
 
 (defn settings-page [subsection req & [get-content-fn]]
   (member-page "settings" get-content-fn req subsection))
