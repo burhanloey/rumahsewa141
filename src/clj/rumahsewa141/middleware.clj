@@ -13,9 +13,7 @@
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
             [buddy.auth.backends.session :refer [session-backend]]
-            [ring.util.response :refer [redirect]]
-            [selmer.middleware :refer [wrap-error-page]]
-            [prone.middleware :refer [wrap-exceptions]])
+            [ring.util.response :refer [redirect]])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -95,6 +93,4 @@
             (assoc-in [:security :anti-forgery] false)
             (dissoc :session)))
       wrap-context
-      wrap-internal-error
-      wrap-error-page
-      wrap-exceptions))
+      wrap-internal-error))
