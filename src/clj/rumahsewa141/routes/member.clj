@@ -55,9 +55,11 @@
     (layout/render "member.html" (merge {:username username
                                          :section section
                                          :subsection subsection}
-                                        (if (nil? get-content-fn)
-                                          nil
-                                          (get-content-fn))))))
+                                        nil
+                                        ;; (if (nil? get-content-fn)
+                                        ;;   nil
+                                        ;;   (get-content-fn))
+                                        ))))
 
 (defn settings-page [subsection req & [get-content-fn]]
   (member-page "settings" get-content-fn req subsection))
