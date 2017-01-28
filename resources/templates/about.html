@@ -1,4 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-  <p>this is the story of rumahsewa141... work in progress</p>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="container">
+            <p><strong>Administrators:</strong></p>
+            <br />
+            {% for admin in admins %}
+            <p>
+                Name: {{admin.name}}<br />
+                Contact no: {{admin.contact_no}}
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

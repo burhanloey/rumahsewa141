@@ -30,6 +30,11 @@ WHERE username = :username
 -- :doc retrieve all users.
 SELECT id, username, nickname, phone_no FROM users ORDER BY id
 
+-- :name get-all-admins :? :*
+-- :doc retrieve all administrators
+SELECT id, username, nickname, phone_no FROM users
+WHERE admin = TRUE ORDER BY id
+
 -- :name get-other-users :? :*
 -- :doc retrieve all users except the given user id
 SELECT id, username, nickname, phone_no, admin FROM users
