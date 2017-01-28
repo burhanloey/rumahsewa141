@@ -37,8 +37,7 @@
                             :description "Password changed."}))))
 
 (defn user-bills [{{id :id} :identity}]
-  #(when-let [bills (db/get-user-bills {:user_id id})]
-     bills))
+  #(db/get-user-bills {:user_id id}))
 
 (defn user-info [{{username :username} :identity}]
   #(db/get-user {:username username}))
