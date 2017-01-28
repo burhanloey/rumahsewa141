@@ -55,7 +55,6 @@
     (layout/render "member.html" (merge {:username username
                                          :section section
                                          :subsection subsection}
-                                        nil
                                         ;; (if (nil? get-content-fn)
                                         ;;   nil
                                         ;;   (get-content-fn))
