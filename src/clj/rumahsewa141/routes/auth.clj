@@ -43,5 +43,6 @@
 
 (defroutes auth-routes
   (GET "/login" req (login-page req))
+  (GET "/logout" req (do-logout! req))
   (POST "/login" req (do-login! req))
   (POST "/logout" req (do-logout! req)))
