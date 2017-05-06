@@ -6,18 +6,20 @@
     "was billed"
     "paid"))
 
-(defn describe-transaction [{:keys [username rent
-                                    internet others transaction_timestamp]}]
-  {:description (apply
-                 str
-                 (drop-last
-                  (str username " " (find-verb rent internet others)
-                       (when-not (zero? rent)
-                         (str " RM " (abs rent) " for rent,"))
-                       (when-not (zero? internet)
-                         (str " RM " (abs internet) " for internet,"))
-                       (when-not (zero? others)
-                         (str "  RM " (abs others) " for other bills,")))))
+(defn describe-transaction [{:keys [username
+                                    rent
+                                    internet
+                                    others
+                                    transaction_timestamp]}]
+  {:description (apply str (drop-last (str username
+                                           " "
+                                           (find-verb rent internet others)
+                                           (when-not (zero? rent)
+                                             (str " RM " (abs rent) " for rent,"))
+                                           (when-not (zero? internet)
+                                             (str " RM " (abs internet) " for internet,"))
+                                           (when-not (zero? others)
+                                             (str "  RM " (abs others) " for other bills,")))))
    :timestamp transaction_timestamp})
 
 (defn history-view [page get-count-fn get-transactions-fn]
