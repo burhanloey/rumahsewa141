@@ -35,7 +35,7 @@
 (defn- user-bills [{{id :id} :identity}]
   #(db/get-user-bills {:user_id id}))
 
-(defn- user-info [{{username :username} :identity}]
+(defn user-info [{{username :username} :identity}]
   #(db/get-user {:username username}))
 
 (defn- transactions-count [{{id :id} :identity}]

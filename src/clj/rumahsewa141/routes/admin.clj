@@ -17,7 +17,7 @@
                "close" (db/close-registration))]
     (redirect "/admin/settings/registration")))
 
-(defn- add-transaction [sign rent internet others]
+(defn- add-transaction [users sign rent internet others]
   (when-let [_ (do-to-selected users #(db/create-transaction!
                                      {:user_id (Integer/parseInt %)
                                       :rent (sign rent)
@@ -35,7 +35,7 @@
     (cond
       (nil? users) (layout/render "error_message.html" {:description "Please select a user."})
       (zero? (+ rent internet others)) (layout/render "error_message.html" {:description "No point if no money involved."})
-      :else (add-transaction sign rent internet others))))
+      :else (add-transaction users sign rent internet others))))
 
 (defn- manage-users [users action]
   (when-let [_ (do-to-selected users (if (= action "delete")

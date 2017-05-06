@@ -23,18 +23,19 @@
 (defn history-view [page get-count-fn get-transactions-fn]
   #(let [max-items        10            ; max no of items displayed 
          prange           5             ; pagination range
-         {tcount :tcount} (get-count-fn)
-         total-pages      (if (zero? (mod tcount max-items))
-                            (quot tcount max-items)
-                            (inc (quot tcount max-items))) 
-         transactions     (get-transactions-fn
-                           {:max_items max-items
-                            :offset (* (dec page) max-items)})
+         get-count-result (future (get-count-fn))
+         {tcount :tcount} @get-count-result
+         transactions     (future (get-transactions-fn
+                                   {:max_items max-items
+                                    :offset (* (dec page) max-items)}))
          first-page       (inc (* (quot (dec page) prange) prange))
          pages            (take prange (iterate inc first-page))
+         total-pages      (if (zero? (mod tcount max-items))
+                            (quot tcount max-items)
+                            (inc (quot tcount max-items)))
          has-page?        (fn [page] (<= page total-pages))
          available-pages  (take-while has-page? pages)]
-     {:transactions  (map describe-transaction transactions)
+     {:transactions  (map describe-transaction @transactions)
       :current_page  page
       :prev_page     (dec first-page)
       :pages         available-pages
