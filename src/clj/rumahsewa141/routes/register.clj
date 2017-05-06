@@ -13,44 +13,39 @@
 (def default-value {:nickname ""
                     :phone_no ""})
 
-(defn do-register! [{{:keys [username password
-                             confirm nickname
+(defn register-user! [username password nickname phone_no]
+  (when-let [_ (db/create-user! (merge default-value {:username username
+                                                      :password (hashers/encrypt password)
+                                                      :nickname nickname
+                                                      :phone_no phone_no}))]
+    (layout/render "success.html" {:title "Success!"
+                                   :description "You have been registered."})))
+
+(defn valid-registration? [params]
+  (b/valid? params
+            :username [v/required available-username]
+            :password v/required
+            :confirm v/required))
+
+(defn get-registration-error [params]
+  (apply str (:username (first (b/validate
+                                params
+                                :username [v/required available-username]
+                                :password v/required
+                                :confirm v/required)))))
+
+(defn do-registration [{{:keys [username
+                             password
+                             confirm
+                             nickname
                              phone_no] :as params} :params}]
-  (if (b/valid? params
-                :username [v/required available-username]
-                :password v/required
-                :confirm v/required)
-
-    ;; If params is valid then register,
+  (if (valid-registration? params)
     (if (= password confirm)
-      (when-let [_ (db/create-user!
-                    (merge default-value
-                           {:username username
-                            :password (hashers/encrypt password)
-                            :nickname nickname
-                            :phone_no phone_no}))]
-        (layout/render "success.html" {:title "Success!"
-                                       :description
-                                       "You have been registered."}))
-      (layout/render "error_message.html" {:description
-                                           "Wrong password confirmation."}))
-
-    ;; else, display errors.
-    (layout/render
-     "error_message.html"
-     {:title "Registration failed!"
-      :description (apply str
-                          (:username
-                           (first
-                            (b/validate
-                             params
-                             :username [v/required available-username]
-                             :password v/required
-                             :confirm v/required))))})))
+      (register-user! username password nickname phone_no)
+      (layout/render "error_message.html" {:description "Wrong password confirmation."}))
+    (layout/render "error_message.html" {:title "Registration failed!"
+                                         :description (get-registration-error params)})))
 
 (defroutes register-routes
-  (GET "/register" [] (layout/render "register.html"
-                                     {:allowed (:value
-                                                (db/get-registration-config))}))
-  (POST "/register" req (do-register! req)))
-    
+  (GET "/register" [] (layout/render "register.html" {:allowed (:value (db/get-registration-config))}))
+  (POST "/register" req (do-registration req)))
