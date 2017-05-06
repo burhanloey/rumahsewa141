@@ -9,39 +9,40 @@
             [bouncer.validators :as v]
             [rumahsewa141.db.core :as db]))
 
-(defn login-page [{identity :identity}]
+(defn show-login-page [{identity :identity}]
   (if (nil? identity)
     (layout/render "login.html")
     (redirect "/member")))
 
-(defn lookup-user [username password]
+(defn- lookup-user [username password]
   (if-let [user (db/get-user {:username username})]
     (if (hashers/check password (get user :password))
       (dissoc user :password))))
 
-(defn do-login! [{{:keys [username password session] :as params} :params}]
-  (if (b/valid? params
-                {:username v/required
-                 :password v/required})
+(defn- valid-login? [params]
+  (b/valid? params
+            {:username v/required
+             :password v/required}))
 
-    ;; If parameters are valid, lookup for the user in database,
+(defn- get-login-error [params]
+  (str (first (b/validate params
+                          {:username v/required
+                           :password v/required}))))
+
+(defn log-user-in [{{:keys [username password session] :as params} :params}]
+  (if (valid-login? params)
     (if-let [{admin :admin :as user} (lookup-user username password)]
       (-> (redirect (if (true? admin) "/admin" "/member"))
           (assoc :session (assoc session :identity user)))
-      (layout/render "error_message.html"
-                     {:title "Failed login"
-                      :description "Wrong username or password."}))
+      (layout/render "error_message.html" {:title "Failed login"
+                                           :description "Wrong username or password."}))
+    (layout/render "error_message.html" {:description (get-login-error params)})))
 
-    ;; else, display errors.
-    (str (first (b/validate params
-                            {:username v/required
-                             :password v/required})))))
-
-(defn do-logout! [{session :session}]
+(defn log-user-out [{session :session}]
   (-> (redirect "/")
       (assoc :session (dissoc session :identity))))
 
 (defroutes auth-routes
-  (GET "/login" req (login-page req))
-  (POST "/login" req (do-login! req))
-  (POST "/logout" req (do-logout! req)))
+  (GET "/login" req (show-login-page req))
+  (POST "/login" req (log-user-in req))
+  (POST "/logout" req (log-user-out req)))
