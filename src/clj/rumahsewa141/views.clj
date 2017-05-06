@@ -26,12 +26,12 @@
   #(let [max-items        10            ; max no of items displayed 
          prange           5             ; pagination range
          get-count-result (future (get-count-fn))
-         {tcount :tcount} @get-count-result
          transactions     (future (get-transactions-fn
                                    {:max_items max-items
                                     :offset (* (dec page) max-items)}))
          first-page       (inc (* (quot (dec page) prange) prange))
          pages            (take prange (iterate inc first-page))
+         {tcount :tcount} @get-count-result
          total-pages      (if (zero? (mod tcount max-items))
                             (quot tcount max-items)
                             (inc (quot tcount max-items)))
