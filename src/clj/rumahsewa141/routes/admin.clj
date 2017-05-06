@@ -70,8 +70,10 @@
 (defn- latest-transactions [params]
   (db/get-latest-transactions params))
 
-(defn admin-page [section get-content-fn
-                  {{username :username} :identity} & [subsection]]
+(defn admin-page [section
+                  get-content-fn
+                  {{username :username} :identity}
+                  & [subsection]]
   (layout/render "member.html" (merge {:username username
                                        :admin true
                                        :section section
@@ -92,9 +94,9 @@
   (GET "/admin/payment" req (admin-page "payment" all-users req))
   (GET "/admin/manage" req (admin-page "manage" (other-users req) req))
   (GET ["/admin/history/:page" :page #"[1-9][0-9]*"] [page :as req]
-       (admin-page "history" (history-view (Long/parseLong page)
-                                           transactions-count
-                                           latest-transactions) req))
+       (admin-page "history"
+                   (history-view (Long/parseLong page) transactions-count latest-transactions)
+                   req))
   (GET "/admin/settings/profile" req (settings-page "profile" req (user-info req)))
   (GET "/admin/settings/account" req (settings-page "account" req))
   (GET "/admin/settings/registration" req (settings-page "registration" req registration-allowed?))
