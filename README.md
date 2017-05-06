@@ -1,8 +1,8 @@
 # rumahsewa141
 
-generated using Luminus version "2.9.11.22"
+Rent and bills management.
 
-FIXME
+Generated using Luminus version "2.9.11.22"
 
 ## Prerequisites
 
@@ -18,4 +18,4 @@ To start a web server for the application, run:
 
 ## License
 
-Copyright © 2017 FIXME
+Copyright © 2017 MIT License
