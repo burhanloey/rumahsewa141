@@ -12,41 +12,33 @@
   (doall (map f (flatten (vector users)))))
 
 (defn update-registration-config [{{action :action} :params}]
-  (if-let [_ (case action
+  (when-let [_ (case action
                "allow" (db/allow-registration)
                "close" (db/close-registration))]
     (redirect "/admin/settings/registration")))
 
-(defn do-transaction [sign {{:keys [users rent internet others]} :params}]
-  (let [pr (parse-double rent)
-        pi (parse-double internet)
-        po (parse-double others)]
-    (cond
-      (nil? users) (layout/render "error_message.html"
-                                  {:description "Please select a user."})
-    
-      (and (zero? pr)
-           (zero? pi)
-           (zero? po)) (layout/render "error_message.html"
-                                      {:description
-                                       "No point if no money involved."})
-    
-      :else (if-let [_ (do-to-selected users
-                                       #(db/create-transaction!
-                                         {:user_id (Integer/parseInt %)
-                                          :rent (sign pr)
-                                          :internet (sign pi)
-                                          :others (sign po)}))]
-              (layout/render "success.html"
-                             {:title "Done!"
-                              :description (if (pos? (sign 1))
-                                             "Selected users billed successfully."
-                                             "Payment received.")})))))
+(defn- add-transaction [sign rent internet others]
+  (when-let [_ (do-to-selected users #(db/create-transaction!
+                                     {:user_id (Integer/parseInt %)
+                                      :rent (sign rent)
+                                      :internet (sign internet)
+                                      :others (sign others)}))]
+    (layout/render "success.html" {:title "Done!"
+                                   :description (if (pos? (sign 1))
+                                                  "Selected users billed successfully."
+                                                  "Payment received.")})))
 
-(defn do-manage [{{:keys [users action]} :params}]
-  (if (nil? users)
-    (layout/render "error_message.html" {:description "Please select a user."})
-    (if-let [_ (do-to-selected users (if (= action "delete")
+(defn do-transaction [sign {{:keys [users rent-raw internet-raw others-raw]} :params}]
+  (let [rent     (parse-double rent-raw)
+        internet (parse-double internet-raw)
+        others   (parse-double others-raw)]
+    (cond
+      (nil? users) (layout/render "error_message.html" {:description "Please select a user."})
+      (zero? (+ rent internet others)) (layout/render "error_message.html" {:description "No point if no money involved."})
+      :else (add-transaction sign rent internet others))))
+
+(defn- manage-users [users action]
+  (when-let [_ (do-to-selected users (if (= action "delete")
                                        #(db/delete-user!
                                          {:id (Integer/parseInt %)})
                                        #(db/update-user-status!
@@ -54,23 +46,28 @@
                                           :admin (case action
                                                    "assign" true
                                                    "revoke" false)})))]
-      (redirect "/admin/manage"))))
+    (redirect "/admin/manage")))
 
-(defn all-users []
+(defn do-manage [{{:keys [users action]} :params}]
+  (if (nil? users)
+    (layout/render "error_message.html" {:description "Please select a user."})
+    (manage-users users action)))
+
+(defn- all-users []
   {:users (db/get-all-users)})
 
-(defn other-users [{{id :id} :identity}]
+(defn- other-users [{{id :id} :identity}]
   (fn [] {:users (db/get-other-users {:id id})}))
 
-(defn all-users-summary []
+(defn- all-users-summary []
   (let [users-summary (db/get-all-users-summary)
         index         (iterate inc 1)]
     {:users (map #(assoc %1 :index %2) users-summary index)}))
 
-(defn transactions-count []
+(defn- transactions-count []
   (db/get-transactions-count))
 
-(defn latest-transactions [params]
+(defn- latest-transactions [params]
   (db/get-latest-transactions params))
 
 (defn admin-page [section get-content-fn
@@ -86,7 +83,7 @@
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))
 
-(defn registration-allowed? []
+(defn- registration-allowed? []
   {:allowed (:value (db/get-registration-config))})
 
 (defroutes admin-routes
@@ -98,15 +95,10 @@
        (admin-page "history" (history-view (Long/parseLong page)
                                            transactions-count
                                            latest-transactions) req))
-  (GET "/admin/settings/profile" req (settings-page "profile"
-                                                    req
-                                                    (user-info req)))
+  (GET "/admin/settings/profile" req (settings-page "profile" req (user-info req)))
   (GET "/admin/settings/account" req (settings-page "account" req))
-  (GET "/admin/settings/registration" req (settings-page "registration"
-                                                         req
-                                                         registration-allowed?))
+  (GET "/admin/settings/registration" req (settings-page "registration" req registration-allowed?))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
   (POST "/admin/manage" req (do-manage req))
   (POST "/admin/settings/registration" req (update-registration-config req)))
-
