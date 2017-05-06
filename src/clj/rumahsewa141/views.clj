@@ -29,7 +29,11 @@
          transactions     (future (get-transactions-fn
                                    {:max_items max-items
                                     :offset (* (dec page) max-items)}))
-         first-page       (inc (* (quot (dec page) prange) prange))
+         first-page       (-> page
+                              dec
+                              (quot prange)
+                              (* prange)
+                              inc)
          pages            (take prange (iterate inc first-page))
          {tcount :tcount} @get-count-result
          total-pages      (if (zero? (mod tcount max-items))
