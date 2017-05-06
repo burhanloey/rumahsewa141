@@ -8,7 +8,7 @@
             [rumahsewa141.views :refer [history-view]]
             [rumahsewa141.math :refer [parse-double]]))
 
-(defn do-to-selected [users f]
+(defn- do-to-selected [users f]
   (doall (map f (flatten (vector users)))))
 
 (defn update-registration-config [{{action :action} :params}]
