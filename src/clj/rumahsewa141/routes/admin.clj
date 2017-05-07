@@ -3,32 +3,25 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :as db]
             [rumahsewa141.repository.user :refer [all-users
                                                   other-users
                                                   all-users-summary
-                                                  user-info]]
+                                                  user-info
+                                                  update-users]]
             [rumahsewa141.repository.transaction :refer [transactions-count
-                                                         latest-transactions]]
-            [rumahsewa141.repository.config :refer [registration-allowed?]]
+                                                         latest-transactions
+                                                         create-transactions-for-users]]
+            [rumahsewa141.repository.config :refer [registration-allowed?
+                                                    update-registration-config]]
             [rumahsewa141.views :refer [history-view]]
             [rumahsewa141.math :refer [parse-double]]))
 
-(defn- do-to-selected [users f]
-  (doall (map f (flatten (vector users)))))
-
-(defn update-registration-config [{{action :action} :params}]
-  (when-let [_ (case action
-               "allow" (db/allow-registration)
-               "close" (db/close-registration))]
+(defn update-registration [{{action :action} :params}]
+  (when-let [_ (update-registration-config action)]
     (redirect "/admin/settings/registration")))
 
 (defn- add-transaction [users sign rent internet others]
-  (when-let [_ (do-to-selected users #(db/create-transaction!
-                                     {:user_id (Integer/parseInt %)
-                                      :rent (sign rent)
-                                      :internet (sign internet)
-                                      :others (sign others)}))]
+  (when-let [_ (create-transactions-for-users users sign rent internet others)]
     (layout/render "success.html" {:title "Done!"
                                    :description (if (pos? (sign 1))
                                                   "Selected users billed successfully."
@@ -48,14 +41,7 @@
       :else (add-transaction users sign rent internet others))))
 
 (defn- manage-users [users action]
-  (when-let [_ (do-to-selected users (if (= action "delete")
-                                       #(db/delete-user!
-                                         {:id (Integer/parseInt %)})
-                                       #(db/update-user-status!
-                                         {:id (Integer/parseInt %)
-                                          :admin (case action
-                                                   "assign" true
-                                                   "revoke" false)})))]
+  (when-let [_ (update-users users action)]
     (redirect "/admin/manage")))
 
 (defn do-manage [{{:keys [users action]} :params}]
@@ -93,4 +79,4 @@
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
   (POST "/admin/manage" req (do-manage req))
-  (POST "/admin/settings/registration" req (update-registration-config req)))
+  (POST "/admin/settings/registration" req (update-registration req)))

@@ -4,21 +4,15 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [clojure.java.io :as io]
-            [rumahsewa141.db.core :as db]
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
             [rumahsewa141.validators :refer [available-username]]
-            [rumahsewa141.repository.config :refer [registration-allowed?]]))
-
-(def default-value {:nickname ""
-                    :phone_no ""})
+            [rumahsewa141.repository.config :refer [registration-allowed?]]
+            [rumahsewa141.repository.user :refer [create-user]]))
 
 (defn- register-user! [username password nickname phone_no]
-  (when-let [_ (db/create-user! (merge default-value {:username username
-                                                      :password (hashers/encrypt password)
-                                                      :nickname nickname
-                                                      :phone_no phone_no}))]
+  (when-let [_ (create-user username password nickname phone_no)]
     (layout/render "success.html" {:title "Success!"
                                    :description "You have been registered."})))
 

@@ -7,7 +7,6 @@
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [rumahsewa141.db.core :as db]
             [rumahsewa141.repository.user :refer [lookup-user]]))
 
 (defn show-login-page [{identity :identity}]

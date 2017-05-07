@@ -1,5 +1,12 @@
 (ns rumahsewa141.repository.transaction
-  (:require [rumahsewa141.db.core :as db]))
+  (:require [rumahsewa141.db.core :as db]
+            [rumahsewa141.util :refer [do-to-selected]]))
+
+(defn create-transactions-for-users [users sign rent internet others]
+  (do-to-selected users #(db/create-transaction! {:user_id (Integer/parseInt %)
+                                                  :rent (sign rent)
+                                                  :internet (sign internet)
+                                                  :others (sign others)})))
 
 (defn transactions-count
   ([]

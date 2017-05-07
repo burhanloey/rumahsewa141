@@ -3,10 +3,11 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :as db]
             [rumahsewa141.repository.user :refer [user-bills
                                                   user-info
-                                                  wrong-password?]]
+                                                  wrong-password?
+                                                  update-user-info
+                                                  change-user-password]]
             [rumahsewa141.repository.transaction :refer [transactions-count
                                                          latest-transactions]]
             [rumahsewa141.views :refer [history-view]]
@@ -14,15 +15,12 @@
 
 (defn do-update-user [{{id :id}                    :identity
                        {:keys [nickname phone_no]} :params}]
-  (when-let [_ (db/update-user! {:id id
-                                 :nickname nickname
-                                 :phone_no phone_no})]
+  (when-let [_ (update-user-info id nickname phone_no)]
     (layout/render "success.html" {:title "Done!"
                                    :description "You have updated your info."})))
 
 (defn- update-password [id new]
-  (when-let [_ (db/change-password! {:id id
-                                     :password (hashers/encrypt new)})]
+  (when-let [_ (change-user-password id new)]
     (layout/render "success.html" {:title "Success!"
                                    :description "Password changed."})))
 

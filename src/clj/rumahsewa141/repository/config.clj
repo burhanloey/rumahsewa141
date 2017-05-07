@@ -3,3 +3,8 @@
 
 (defn registration-allowed? []
   {:allowed (:value (db/get-registration-config))})
+
+(defn update-registration-config [action]
+  (case action
+    "allow" (db/allow-registration)
+    "close" (db/close-registration)))

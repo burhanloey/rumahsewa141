@@ -1,6 +1,16 @@
 (ns rumahsewa141.repository.user
   (:require [rumahsewa141.db.core :as db]
+            [rumahsewa141.util :refer [do-to-selected]]
             [buddy.hashers :as hashers]))
+
+(def default-value {:nickname ""
+                    :phone_no ""})
+
+(defn create-user [username password nickname phone_no]
+  (db/create-user! (merge default-value {:username username
+                                         :password (hashers/encrypt password)
+                                         :nickname nickname
+                                         :phone_no phone_no})))
 
 (defn user-bills [{{id :id} :identity}]
   (partial db/get-user-bills {:user_id id}))
@@ -30,3 +40,22 @@
 (defn wrong-password? [username password]
   (when-let [user (db/get-user {:username username})]
     (not (hashers/check password (get user :password)))))
+
+(defn update-users [users action]
+  (do-to-selected users (if (= action "delete")
+                          #(db/delete-user!
+                            {:id (Integer/parseInt %)})
+                          #(db/update-user-status!
+                            {:id (Integer/parseInt %)
+                             :admin (case action
+                                      "assign" true
+                                      "revoke" false)}))))
+
+(defn update-user-info [id nickname phone_no]
+  (db/update-user! {:id id
+                    :nickname nickname
+                    :phone_no phone_no}))
+
+(defn change-user-password [id new]
+  (db/change-password! {:id id
+                        :password (hashers/encrypt new)}))
