@@ -3,21 +3,24 @@
             [buddy.hashers :as hashers]))
 
 (defn user-bills [{{id :id} :identity}]
-  #(db/get-user-bills {:user_id id}))
+  (partial db/get-user-bills {:user_id id}))
 
 (defn user-info [{{username :username} :identity}]
-  #(db/get-user {:username username}))
+  (partial db/get-user {:username username}))
 
 (defn all-users []
   {:users (db/get-all-users)})
 
 (defn other-users [{{id :id} :identity}]
-  (fn [] {:users (db/get-other-users {:id id})}))
+  (comp (partial assoc {} :users) (partial db/get-other-users {:id id})))
+
+(defn- assoc-index [users index]
+  (assoc users :index index))
 
 (defn all-users-summary []
   (let [users-summary (db/get-all-users-summary)
         index         (iterate inc 1)]
-    {:users (map #(assoc %1 :index %2) users-summary index)}))
+    {:users (map assoc-index users-summary index)}))
 
 (defn lookup-user [username password]
   (if-let [user (db/get-user {:username username})]
