@@ -24,6 +24,6 @@
     (if (hashers/check password (get user :password))
       (dissoc user :password))))
 
-(defn- wrong-password? [username password]
+(defn wrong-password? [username password]
   (when-let [user (db/get-user {:username username})]
     (not (hashers/check password (get user :password)))))
