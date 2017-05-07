@@ -10,7 +10,7 @@
                                                   update-users]]
             [rumahsewa141.repository.transaction :refer [transactions-count
                                                          latest-transactions
-                                                         create-transactions-for-users]]
+                                                         add-transactions-by-users]]
             [rumahsewa141.repository.config :refer [registration-allowed?
                                                     update-registration-config]]
             [rumahsewa141.views :refer [history-view]]
@@ -21,7 +21,7 @@
     (redirect "/admin/settings/registration")))
 
 (defn- add-transaction [users sign rent internet others]
-  (when-let [_ (create-transactions-for-users users sign rent internet others)]
+  (when-let [_ (add-transactions-by-users users sign rent internet others)]
     (layout/render "success.html" {:title "Done!"
                                    :description (if (pos? (sign 1))
                                                   "Selected users billed successfully."

@@ -8,4 +8,4 @@
    :contact_no phone_no})
 
 (defn display-all-admins-info []
-  (map display-info (db/get-all-admins)))
+  (map display-info (db/fetch-all-admins)))

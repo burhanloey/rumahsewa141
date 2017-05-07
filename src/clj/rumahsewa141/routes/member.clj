@@ -3,12 +3,12 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.repository.user :refer [user-bills
-                                                  user-info
+            [rumahsewa141.repository.user :refer [user-info
                                                   wrong-password?
                                                   update-user-info
                                                   change-user-password]]
-            [rumahsewa141.repository.transaction :refer [transactions-count
+            [rumahsewa141.repository.transaction :refer [user-bills
+                                                         transactions-count
                                                          latest-transactions]]
             [rumahsewa141.views :refer [history-view]]
             [buddy.hashers :as hashers]))

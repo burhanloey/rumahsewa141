@@ -2,9 +2,9 @@
   (:require [rumahsewa141.db.core :as db]))
 
 (defn registration-allowed? []
-  {:allowed (:value (db/get-registration-config))})
+  {:allowed (:value (db/fetch-registration-config))})
 
 (defn update-registration-config [action]
   (case action
-    "allow" (db/allow-registration)
-    "close" (db/close-registration)))
+    "allow" (db/update-registration-config! {:value true})
+    "close" (db/update-registration-config! {:value false})))

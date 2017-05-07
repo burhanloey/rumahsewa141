@@ -1,6 +1,7 @@
 (ns rumahsewa141.repository.user
   (:require [rumahsewa141.db.core :as db]
-            [rumahsewa141.util :refer [do-to-selected]]
+            [rumahsewa141.util :refer [do-to-selected
+                                       parse-int]]
             [buddy.hashers :as hashers]))
 
 (def default-value {:nickname ""
@@ -12,50 +13,63 @@
                                          :nickname nickname
                                          :phone_no phone_no})))
 
-(defn user-bills [{{id :id} :identity}]
-  (partial db/get-user-bills {:user_id id}))
-
 (defn user-info [{{username :username} :identity}]
-  (partial db/get-user {:username username}))
+  (partial db/fetch-user-by-username {:username username}))
+
+(defn lookup-user [username password]
+  (if-let [user (db/fetch-user-by-username {:username username})]
+    (if (hashers/check password (get user :password))
+      (dissoc user :password))))
+
+(defn wrong-password? [username password]
+  (when-let [user (db/fetch-user-by-username {:username username})]
+    (not (hashers/check password (get user :password)))))
 
 (defn all-users []
-  {:users (db/get-all-users)})
+  {:users (db/fetch-all-users)})
 
 (defn other-users [{{id :id} :identity}]
-  (comp (partial assoc {} :users) (partial db/get-other-users {:id id})))
+  (comp
+   (partial assoc {} :users)
+   (partial db/fetch-users-other-than-id {:id id})))
 
 (defn- assoc-index [users index]
   (assoc users :index index))
 
 (defn all-users-summary []
-  (let [users-summary (db/get-all-users-summary)
+  (let [users-summary (db/fetch-all-users-summary)
         index         (iterate inc 1)]
     {:users (map assoc-index users-summary index)}))
 
-(defn lookup-user [username password]
-  (if-let [user (db/get-user {:username username})]
-    (if (hashers/check password (get user :password))
-      (dissoc user :password))))
+(defn delete-user []
+  (comp
+   (partial db/delete-user-by-id!)
+   (partial assoc {} :id)
+   (partial parse-int)))
 
-(defn wrong-password? [username password]
-  (when-let [user (db/get-user {:username username})]
-    (not (hashers/check password (get user :password)))))
+(defn update-admin-status [admin?]
+  (comp
+   (partial db/update-user-status!)
+   (partial assoc {} :admin admin? :id)
+   (partial parse-int)))
+
+(defn assign-admin-by-id []
+  (update-admin-status true))
+
+(defn revoke-admin-by-id []
+  (update-admin-status false))
 
 (defn update-users [users action]
-  (do-to-selected users (if (= action "delete")
-                          #(db/delete-user!
-                            {:id (Integer/parseInt %)})
-                          #(db/update-user-status!
-                            {:id (Integer/parseInt %)
-                             :admin (case action
-                                      "assign" true
-                                      "revoke" false)}))))
+  (do-to-selected users (case action
+                          "delete" (delete-user)
+                          "assign" (assign-admin-by-id)
+                          "revoke" (revoke-admin-by-id))))
 
 (defn update-user-info [id nickname phone_no]
-  (db/update-user! {:id id
-                    :nickname nickname
-                    :phone_no phone_no}))
+  (db/update-user-by-id! {:id id
+                          :nickname nickname
+                          :phone_no phone_no}))
 
 (defn change-user-password [id new]
-  (db/change-password! {:id id
-                        :password (hashers/encrypt new)}))
+  (db/update-password-by-id! {:id id
+                              :password (hashers/encrypt new)}))
