@@ -4,7 +4,7 @@ UPDATE users
 SET admin = :admin
 WHERE id = :id
 
--- :name get-all-admins :? :*
+-- :name fetch-all-admins :? :*
 -- :doc retrieve all administrators
 SELECT id, username, nickname, phone_no FROM users
 WHERE admin = TRUE ORDER BY id

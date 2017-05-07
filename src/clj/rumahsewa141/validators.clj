@@ -5,7 +5,7 @@
 (v/defvalidator username-exist
   {:default-message-format "%s does not exist."}
   [value]
-  (db/get-user {:username value}))
+  (db/fetch-user-by-username {:username value}))
 
 (v/defvalidator available-username
   {:default-message-format "%s has been taken."}

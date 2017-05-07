@@ -3,19 +3,13 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]
-            [rumahsewa141.db.core :as db]))
+            [rumahsewa141.repository.admin :refer [display-all-admins-info]]))
 
 (defn home-page []
   (layout/render "home.html"))
 
-(defn display-info [{:keys [username nickname phone_no]}]
-  {:name (if (clojure.string/blank? nickname)
-           username
-           nickname)
-   :contact_no phone_no})
-
 (defn about-page []
-  (layout/render "about.html" {:admins (map display-info (db/get-all-admins))}))
+  (layout/render "about.html" {:admins (display-all-admins-info)}))
 
 (defroutes home-routes
   (GET "/" [] (home-page))

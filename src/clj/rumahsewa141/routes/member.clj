@@ -3,25 +3,24 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
-            [rumahsewa141.db.core :as db]
+            [rumahsewa141.repository.user :refer [user-info
+                                                  wrong-password?
+                                                  update-user-info
+                                                  change-user-password]]
+            [rumahsewa141.repository.transaction :refer [user-bills
+                                                         transactions-count
+                                                         latest-transactions]]
             [rumahsewa141.views :refer [history-view]]
             [buddy.hashers :as hashers]))
 
 (defn do-update-user [{{id :id}                    :identity
                        {:keys [nickname phone_no]} :params}]
-  (when-let [_ (db/update-user! {:id id
-                                 :nickname nickname
-                                 :phone_no phone_no})]
+  (when-let [_ (update-user-info id nickname phone_no)]
     (layout/render "success.html" {:title "Done!"
                                    :description "You have updated your info."})))
 
-(defn- wrong-password? [username password]
-  (when-let [user (db/get-user {:username username})]
-    (not (hashers/check password (get user :password)))))
-
 (defn- update-password [id new]
-  (when-let [_ (db/change-password! {:id id
-                                     :password (hashers/encrypt new)})]
+  (when-let [_ (change-user-password id new)]
     (layout/render "success.html" {:title "Success!"
                                    :description "Password changed."})))
 
@@ -31,18 +30,6 @@
     (not= new confirm) (layout/render "error_message.html" {:description "Wrong password confirmation."})
     (wrong-password? username old) (layout/render "error_message.html" {:description "Wrong password."})
     :else (update-password id new)))
-
-(defn- user-bills [{{id :id} :identity}]
-  #(db/get-user-bills {:user_id id}))
-
-(defn user-info [{{username :username} :identity}]
-  #(db/get-user {:username username}))
-
-(defn- transactions-count [{{id :id} :identity}]
-  #(db/get-transactions-count-by-user {:user_id id}))
-
-(defn- latest-transactions [{{id :id} :identity}]
-  #(db/get-latest-transactions-by-user (merge % {:user_id id})))
 
 (defn member-page [section
                    get-content-fn
@@ -63,9 +50,9 @@
 (defroutes member-routes
   (GET "/member" req (member-page "overview" (user-bills req) req))
   (GET ["/member/history/:page" :page #"[1-9][0-9]*"] [page :as req]
-       (member-page "history" (history-view (Long/parseLong page)
-                                            (transactions-count req)
-                                            (latest-transactions req)) req))
+       (member-page "history"
+                    (history-view (Long/parseLong page) (transactions-count req) (latest-transactions req))
+                    req))
   (GET "/member/settings/profile" req (settings-page "profile" req (user-info req)))
   (GET "/member/settings/account" req (settings-page "account" req))
   (POST "/settings/profile" req (do-update-user req))
