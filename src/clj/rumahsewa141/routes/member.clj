@@ -4,6 +4,11 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [rumahsewa141.db.core :as db]
+            [rumahsewa141.repository.user :refer [user-bills
+                                                  user-info
+                                                  wrong-password?]]
+            [rumahsewa141.repository.transaction :refer [transactions-count
+                                                         latest-transactions]]
             [rumahsewa141.views :refer [history-view]]
             [buddy.hashers :as hashers]))
 
@@ -14,10 +19,6 @@
                                  :phone_no phone_no})]
     (layout/render "success.html" {:title "Done!"
                                    :description "You have updated your info."})))
-
-(defn- wrong-password? [username password]
-  (when-let [user (db/get-user {:username username})]
-    (not (hashers/check password (get user :password)))))
 
 (defn- update-password [id new]
   (when-let [_ (db/change-password! {:id id
@@ -31,18 +32,6 @@
     (not= new confirm) (layout/render "error_message.html" {:description "Wrong password confirmation."})
     (wrong-password? username old) (layout/render "error_message.html" {:description "Wrong password."})
     :else (update-password id new)))
-
-(defn- user-bills [{{id :id} :identity}]
-  #(db/get-user-bills {:user_id id}))
-
-(defn user-info [{{username :username} :identity}]
-  #(db/get-user {:username username}))
-
-(defn- transactions-count [{{id :id} :identity}]
-  #(db/get-transactions-count-by-user {:user_id id}))
-
-(defn- latest-transactions [{{id :id} :identity}]
-  #(db/get-latest-transactions-by-user (merge % {:user_id id})))
 
 (defn member-page [section
                    get-content-fn

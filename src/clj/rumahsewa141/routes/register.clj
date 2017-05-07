@@ -8,7 +8,8 @@
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
             [bouncer.validators :as v]
-            [rumahsewa141.validators :refer [available-username]]))
+            [rumahsewa141.validators :refer [available-username]]
+            [rumahsewa141.repository.config :refer [registration-allowed?]]))
 
 (def default-value {:nickname ""
                     :phone_no ""})
@@ -47,5 +48,5 @@
                                          :description (get-registration-error params)})))
 
 (defroutes register-routes
-  (GET "/register" [] (layout/render "register.html" {:allowed (:value (db/get-registration-config))}))
+  (GET "/register" [] (layout/render "register.html" (registration-allowed?)))
   (POST "/register" req (do-registration req)))

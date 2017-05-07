@@ -5,6 +5,12 @@
             [ring.util.response :refer [redirect]]
             [rumahsewa141.db.core :as db]
             [rumahsewa141.routes.member :refer [user-info]]
+            [rumahsewa141.repository.user :refer [all-users
+                                                  other-users
+                                                  all-users-summary]]
+            [rumahsewa141.repository.transaction :refer [transactions-count
+                                                         latest-transactions]]
+            [rumahsewa141.repository.config :refer [registration-allowed?]]
             [rumahsewa141.views :refer [history-view]]
             [rumahsewa141.math :refer [parse-double]]))
 
@@ -53,23 +59,6 @@
     (layout/render "error_message.html" {:description "Please select a user."})
     (manage-users users action)))
 
-(defn- all-users []
-  {:users (db/get-all-users)})
-
-(defn- other-users [{{id :id} :identity}]
-  (fn [] {:users (db/get-other-users {:id id})}))
-
-(defn- all-users-summary []
-  (let [users-summary (db/get-all-users-summary)
-        index         (iterate inc 1)]
-    {:users (map #(assoc %1 :index %2) users-summary index)}))
-
-(defn- transactions-count []
-  (db/get-transactions-count))
-
-(defn- latest-transactions [params]
-  (db/get-latest-transactions params))
-
 (defn admin-page [section
                   get-content-fn
                   {{username :username} :identity}
@@ -84,9 +73,6 @@
 
 (defn settings-page [subsection req & [get-content-fn]]
   (admin-page "settings" get-content-fn req subsection))
-
-(defn- registration-allowed? []
-  {:allowed (:value (db/get-registration-config))})
 
 (defroutes admin-routes
   (GET "/admin" req (admin-page "overview" all-users-summary req))
