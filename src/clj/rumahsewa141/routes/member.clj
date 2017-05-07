@@ -52,9 +52,9 @@
 (defroutes member-routes
   (GET "/member" req (member-page "overview" (user-bills req) req))
   (GET ["/member/history/:page" :page #"[1-9][0-9]*"] [page :as req]
-       (member-page "history" (history-view (Long/parseLong page)
-                                            (transactions-count req)
-                                            (latest-transactions req)) req))
+       (member-page "history"
+                    (history-view (Long/parseLong page) (transactions-count req) (latest-transactions req))
+                    req))
   (GET "/member/settings/profile" req (settings-page "profile" req (user-info req)))
   (GET "/member/settings/account" req (settings-page "account" req))
   (POST "/settings/profile" req (do-update-user req))

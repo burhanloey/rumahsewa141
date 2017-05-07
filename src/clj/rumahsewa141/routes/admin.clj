@@ -4,10 +4,10 @@
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [rumahsewa141.db.core :as db]
-            [rumahsewa141.routes.member :refer [user-info]]
             [rumahsewa141.repository.user :refer [all-users
                                                   other-users
-                                                  all-users-summary]]
+                                                  all-users-summary
+                                                  user-info]]
             [rumahsewa141.repository.transaction :refer [transactions-count
                                                          latest-transactions]]
             [rumahsewa141.repository.config :refer [registration-allowed?]]
@@ -34,10 +34,14 @@
                                                   "Selected users billed successfully."
                                                   "Payment received.")})))
 
-(defn do-transaction [sign {{:keys [users rent-raw internet-raw others-raw]} :params}]
-  (let [rent     (parse-double rent-raw)
-        internet (parse-double internet-raw)
-        others   (parse-double others-raw)]
+(defn do-transaction [sign
+                      {{users           :users
+                        rent-string     :rent
+                        internet-string :internet
+                        others-string   :others  } :params}]
+  (let [rent     (parse-double rent-string)
+        internet (parse-double internet-string)
+        others   (parse-double others-string)]
     (cond
       (nil? users) (layout/render "error_message.html" {:description "Please select a user."})
       (zero? (+ rent internet others)) (layout/render "error_message.html" {:description "No point if no money involved."})
@@ -81,7 +85,7 @@
   (GET "/admin/manage" req (admin-page "manage" (other-users req) req))
   (GET ["/admin/history/:page" :page #"[1-9][0-9]*"] [page :as req]
        (admin-page "history"
-                   (history-view (Long/parseLong page) transactions-count latest-transactions)
+                   (history-view (Long/parseLong page) transactions-count (latest-transactions req))
                    req))
   (GET "/admin/settings/profile" req (settings-page "profile" req (user-info req)))
   (GET "/admin/settings/account" req (settings-page "account" req))
