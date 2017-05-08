@@ -13,28 +13,38 @@
             [rumahsewa141.views :refer [history-view]]
             [buddy.hashers :as hashers]))
 
-(defn do-update-user [{{id :id}                    :identity
-                       {:keys [nickname phone_no]} :params}]
+(defn do-update-user
+  "Update user info controller. Render success page afterwards."
+  [{{id :id} :identity {:keys [nickname phone_no]} :params}]
   (when-let [_ (update-user-info id nickname phone_no)]
     (layout/render "success.html" {:title "Done!"
                                    :description "You have updated your info."})))
 
-(defn- update-password [id new]
+(defn- update-password
+  "Update user password with new password. Render success page
+  afterwards."
+  [id new]
   (when-let [_ (change-user-password id new)]
     (layout/render "success.html" {:title "Success!"
                                    :description "Password changed."})))
 
-(defn change-password [{{:keys [id username]}     :identity
-                        {:keys [old new confirm]} :params}]
+(defn change-password
+  "Change password controller.
+
+  If password confirmation, render error page saying so.
+  If password is wrong, render error page saying so.
+  Else, update password with new password."
+  [{{:keys [id username]} :identity {:keys [old new confirm]} :params}]
   (cond
     (not= new confirm) (layout/render "error_message.html" {:description "Wrong password confirmation."})
     (wrong-password? username old) (layout/render "error_message.html" {:description "Wrong password."})
     :else (update-password id new)))
 
-(defn member-page [section
-                   get-content-fn
-                   {{:keys [username admin]} :identity}
-                   & [subsection]]
+(defn member-page
+  "Render member page with the supplied section. The get-content-fn
+  will supply content required for that section. The subsection is
+  optional and only used in settings section."
+  [section get-content-fn {{:keys [username admin]} :identity} & [subsection]]
   (if (true? admin)
     (redirect "/admin")
     (layout/render "member.html" (merge {:username username
@@ -44,7 +54,9 @@
                                           nil
                                           (get-content-fn))))))
 
-(defn settings-page [subsection req & [get-content-fn]]
+(defn settings-page
+  "Render settings page for member."
+  [subsection req & [get-content-fn]]
   (member-page "settings" get-content-fn req subsection))
 
 (defroutes member-routes

@@ -9,22 +9,33 @@
             [bouncer.validators :as v]
             [rumahsewa141.repository.user :refer [lookup-user]]))
 
-(defn show-login-page [{identity :identity}]
+(defn show-login-page
+  "Login page controller. If user logged in, redirect to member page,
+  else, render login page."
+  [{identity :identity}]
   (if (nil? identity)
     (layout/render "login.html")
     (redirect "/member")))
 
-(defn- valid-login? [params]
+(defn- valid-login?
+  "Check if login parameters are valid."
+  [params]
   (b/valid? params
             {:username v/required
              :password v/required}))
 
-(defn- get-login-error [params]
+(defn- get-login-error
+  "Get login error message from the validation."
+  [params]
   (str (first (b/validate params
                           {:username v/required
                            :password v/required}))))
 
-(defn log-user-in [{{:keys [username password session] :as params} :params}]
+(defn log-user-in
+  "Login controller. When login credentials are correct, redirect
+  according to user status, i.e, admin will be redirected to admin
+  page, and normal user will be redirected to member page."
+  [{{:keys [username password session] :as params} :params}]
   (if (valid-login? params)
     (if-let [{admin :admin :as user} (lookup-user username password)]
       (-> (redirect (if (true? admin) "/admin" "/member"))
@@ -33,7 +44,9 @@
                                            :description "Wrong username or password."}))
     (layout/render "error_message.html" {:description (get-login-error params)})))
 
-(defn log-user-out [{session :session}]
+(defn log-user-out
+  "Logout controller. Redirect to homepage when successful."
+  [{session :session}]
   (-> (redirect "/")
       (assoc :session (dissoc session :identity))))
 
