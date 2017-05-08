@@ -1,16 +1,21 @@
 (ns rumahsewa141.views
   (:require [rumahsewa141.math :refer [abs]]))
 
-(defn find-verb [a b c]
+(defn find-verb
+  "Return a string that explains the supplied arguments. If the
+  arguments are positive, return 'was billed', else, return 'paid'."
+  [a b c]
   (if (or (pos? a) (pos? b) (pos? c))
     "was billed"
     "paid"))
 
-(defn describe-transaction [{:keys [username
-                                    rent
-                                    internet
-                                    others
-                                    transaction_timestamp]}]
+(defn describe-transaction
+  "Describe transaction in words understandable by human."
+  [{:keys [username
+           rent
+           internet
+           others
+           transaction_timestamp]}]
   {:description (apply str (drop-last (str username
                                            " "
                                            (find-verb rent internet others)
@@ -22,7 +27,10 @@
                                              (str "  RM " (abs others) " for other bills,")))))
    :timestamp transaction_timestamp})
 
-(defn history-view [page get-count-fn get-transactions-fn]
+(defn history-view
+  "Return a function that will display transaction history with
+  pagination."
+  [page get-count-fn get-transactions-fn]
   #(let [max-items        10            ; max no of items displayed 
          prange           5             ; pagination range
          get-count-result (future (get-count-fn))
