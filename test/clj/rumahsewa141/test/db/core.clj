@@ -20,17 +20,14 @@
     (jdbc/db-set-rollback-only! t-conn)
     (is (= 1 (db/create-user!
                t-conn
-               {:id         "1"
-                :first_name "Sam"
-                :last_name  "Smith"
-                :email      "sam.smith@example.com"
-                :pass       "pass"})))
-    (is (= {:id         "1"
-            :first_name "Sam"
-            :last_name  "Smith"
-            :email      "sam.smith@example.com"
-            :pass       "pass"
-            :admin      nil
-            :last_login nil
-            :is_active  nil}
-           (db/get-user t-conn {:id "1"})))))
+               {:username "dingdong123"
+                :nickname "Ding Dong"
+                :phone_no "012-9876543"
+                :password "pass"})))
+    (is (= {:username "dingdong123"
+            :nickname "Ding Dong"
+            :phone_no "012-9876543"
+            :password "pass"
+            :admin    nil}
+           (dissoc (db/fetch-user-by-username t-conn {:username "dingdong123"})
+                   :id)))))
