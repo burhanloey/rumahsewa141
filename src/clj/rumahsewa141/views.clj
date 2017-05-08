@@ -11,11 +11,7 @@
 
 (defn describe-transaction
   "Describe transaction in words understandable by human."
-  [{:keys [username
-           rent
-           internet
-           others
-           transaction_timestamp]}]
+  [{:keys [username rent internet others transaction_timestamp]}]
   {:description (apply str (drop-last (str username
                                            " "
                                            (find-verb rent internet others)
