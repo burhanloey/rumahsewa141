@@ -1,4 +1,4 @@
-(ns rumahsewa141.repository.config
+(ns rumahsewa141.services.config
   (:require [rumahsewa141.db.core :as db]))
 
 (defn registration-allowed?

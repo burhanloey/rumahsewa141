@@ -1,4 +1,4 @@
-(ns rumahsewa141.repository.transaction
+(ns rumahsewa141.services.transaction
   (:require [rumahsewa141.db.core :as db]
             [rumahsewa141.util :refer [do-to-selected
                                        parse-int]]))

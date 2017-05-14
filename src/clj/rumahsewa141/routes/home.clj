@@ -1,20 +1,21 @@
 (ns rumahsewa141.routes.home
   (:require [rumahsewa141.layout :as layout]
+            [rumahsewa141.config :refer [env]]
+            [rumahsewa141.services.admin :as admin]
             [compojure.core :refer [defroutes GET POST]]
-            [ring.util.http-response :as response]
-            [clojure.java.io :as io]
-            [rumahsewa141.repository.admin :refer [display-all-admins-info]]))
+            [ring.util.http-response :as response]))
 
 (defn home-page
   "Render home page."
   []
-  (layout/render "home.html"))
+  (layout/render "home.html" {:address1 (:address1 env)
+                              :address2 (:address2 env)}))
 
 (defn about-page
   "Render about page with all administrators contact retrieved from
   database."
   []
-  (layout/render "about.html" {:admins (display-all-admins-info)}))
+  (layout/render "about.html" {:admins (admin/display-all-admins-info)}))
 
 (defroutes home-routes
   (GET "/" [] (home-page))

@@ -1,4 +1,4 @@
-(ns rumahsewa141.repository.admin
+(ns rumahsewa141.services.admin
   (:require [rumahsewa141.db.core :as db]))
 
 (defn display-info
