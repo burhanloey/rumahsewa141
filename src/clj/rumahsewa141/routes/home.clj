@@ -3,8 +3,7 @@
             [rumahsewa141.config :refer [env]]
             [rumahsewa141.services.admin :as admin]
             [compojure.core :refer [defroutes GET POST]]
-            [ring.util.http-response :as response]
-            [clojure.java.io :as io]))
+            [ring.util.http-response :as response]))
 
 (defn home-page
   "Render home page."
