@@ -1,13 +1,13 @@
 (ns rumahsewa141.routes.auth
   (:require [rumahsewa141.layout :as layout]
+            [rumahsewa141.services.user :as user]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [clojure.java.io :as io]
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
-            [bouncer.validators :as v]
-            [rumahsewa141.repository.user :refer [lookup-user]]))
+            [bouncer.validators :as v]))
 
 (defn show-login-page
   "Login page controller. If user logged in, redirect to member page,
@@ -37,7 +37,7 @@
   page, and normal user will be redirected to member page."
   [{{:keys [username password session] :as params} :params}]
   (if (valid-login? params)
-    (if-let [{admin :admin :as user} (lookup-user username password)]
+    (if-let [{admin :admin :as user} (user/lookup-user username password)]
       (-> (redirect (if (true? admin) "/admin" "/member"))
           (assoc :session (assoc session :identity user)))
       (layout/render "error_message.html" {:title "Failed login"

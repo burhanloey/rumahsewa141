@@ -1,21 +1,21 @@
 (ns rumahsewa141.routes.register
   (:require [rumahsewa141.layout :as layout]
+            [rumahsewa141.services.config :as site-config]
+            [rumahsewa141.services.user :as user]
+            [rumahsewa141.validators :refer [available-username]]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
             [ring.util.response :refer [redirect]]
             [clojure.java.io :as io]
             [buddy.hashers :as hashers]
             [bouncer.core :as b]
-            [bouncer.validators :as v]
-            [rumahsewa141.validators :refer [available-username]]
-            [rumahsewa141.repository.config :refer [registration-allowed?]]
-            [rumahsewa141.repository.user :refer [create-user]]))
+            [bouncer.validators :as v]))
 
 (defn- register-user!
   "Register user with the supplied informations. Render success page
   afterwards."
   [username password nickname phone_no]
-  (when-let [_ (create-user username password nickname phone_no)]
+  (when-let [_ (user/create-user username password nickname phone_no)]
     (layout/render "success.html" {:title "Success!"
                                    :description "You have been registered."})))
 
@@ -50,5 +50,5 @@
                                          :description (get-registration-error params)})))
 
 (defroutes register-routes
-  (GET "/register" [] (layout/render "register.html" (registration-allowed?)))
+  (GET "/register" [] (layout/render "register.html" (site-config/registration-allowed?)))
   (POST "/register" req (do-registration req)))

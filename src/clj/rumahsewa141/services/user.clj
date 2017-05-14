@@ -1,4 +1,4 @@
-(ns rumahsewa141.repository.user
+(ns rumahsewa141.services.user
   (:require [rumahsewa141.db.core :as db]
             [rumahsewa141.util :refer [do-to-selected
                                        parse-int]]

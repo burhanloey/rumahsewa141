@@ -1,33 +1,26 @@
 (ns rumahsewa141.routes.admin
   (:require [rumahsewa141.layout :as layout]
+            [rumahsewa141.services.user :as user]
+            [rumahsewa141.services.transaction :as transaction]
+            [rumahsewa141.services.config :as site-config]
+            [rumahsewa141.views :as views]
+            [rumahsewa141.math :refer [parse-double]]
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :as response]
-            [ring.util.response :refer [redirect]]
-            [rumahsewa141.repository.user :refer [all-users
-                                                  other-users
-                                                  all-users-summary
-                                                  user-info
-                                                  update-users]]
-            [rumahsewa141.repository.transaction :refer [transactions-count
-                                                         latest-transactions
-                                                         add-transactions-by-users]]
-            [rumahsewa141.repository.config :refer [registration-allowed?
-                                                    update-registration-config]]
-            [rumahsewa141.views :refer [history-view]]
-            [rumahsewa141.math :refer [parse-double]]))
+            [ring.util.response :refer [redirect]]))
 
 (defn update-registration
   "Update registration controller. Redirect to registration page
   afterwards."
   [{{action :action} :params}]
-  (when-let [_ (update-registration-config action)]
+  (when-let [_ (site-config/update-registration-config action)]
     (redirect "/admin/settings/registration")))
 
 (defn- add-transaction
   "Add transaction for selected users. Render success page when
   success."
   [users sign rent internet others]
-  (when-let [_ (add-transactions-by-users users sign rent internet others)]
+  (when-let [_ (transaction/add-transactions-by-users users sign rent internet others)]
     (layout/render "success.html" {:title "Done!"
                                    :description (if (pos? (sign 1))
                                                   "Selected users billed successfully."
@@ -56,7 +49,7 @@
   "Manage selected users according to action. Redirect to management
   page afterwards."
   [users action]
-  (when-let [_ (update-users users action)]
+  (when-let [_ (user/update-users users action)]
     (redirect "/admin/manage")))
 
 (defn do-manage
@@ -90,17 +83,17 @@
   (admin-page "settings" get-content-fn req subsection))
 
 (defroutes admin-routes
-  (GET "/admin" req (admin-page "overview" all-users-summary req))
-  (GET "/admin/billing" req (admin-page "billing" all-users req))
-  (GET "/admin/payment" req (admin-page "payment" all-users req))
-  (GET "/admin/manage" req (admin-page "manage" (other-users req) req))
+  (GET "/admin" req (admin-page "overview" user/all-users-summary req))
+  (GET "/admin/billing" req (admin-page "billing" user/all-users req))
+  (GET "/admin/payment" req (admin-page "payment" user/all-users req))
+  (GET "/admin/manage" req (admin-page "manage" (user/other-users req) req))
   (GET ["/admin/history/:page" :page #"[1-9][0-9]*"] [page :as req]
        (admin-page "history"
-                   (history-view (Long/parseLong page) transactions-count (latest-transactions req))
+                   (views/history-view (Long/parseLong page) transaction/transactions-count (transaction/latest-transactions req))
                    req))
-  (GET "/admin/settings/profile" req (settings-page "profile" req (user-info req)))
+  (GET "/admin/settings/profile" req (settings-page "profile" req (user/user-info req)))
   (GET "/admin/settings/account" req (settings-page "account" req))
-  (GET "/admin/settings/registration" req (settings-page "registration" req registration-allowed?))
+  (GET "/admin/settings/registration" req (settings-page "registration" req site-config/registration-allowed?))
   (POST "/admin/billing" req (do-transaction + req))
   (POST "/admin/payment" req (do-transaction - req))
   (POST "/admin/manage" req (do-manage req))
